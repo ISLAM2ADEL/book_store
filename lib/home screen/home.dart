@@ -155,10 +155,12 @@ class Home extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemCount: 15,
                   itemBuilder: (context, index) => _bookBuild(
-                      bookImage: "hunger.png",
-                      bookName: "The Hunger",
-                      bookAuthor: "Patrick Mauriee",
-                      bookRate: "4.5"),
+                    bookImage: "hunger.png",
+                    bookName: "The Hunger",
+                    bookAuthor: "Patrick Mauriee",
+                    bookRate: "22",
+                    isPrice: true,
+                  ),
                   separatorBuilder: (context, index) => const SizedBox(
                     width: 8,
                   ),
@@ -200,11 +202,11 @@ class Home extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _bottonNavButtons(icons: CupertinoIcons.home, text: "Home"),
-              _bottonNavButtons(icons: CupertinoIcons.heart, text: "Favourite"),
-              _bottonNavButtons(
+              _bottomNavButtons(icons: CupertinoIcons.home, text: "Home"),
+              _bottomNavButtons(icons: CupertinoIcons.heart, text: "Favourite"),
+              _bottomNavButtons(
                   icons: Icons.category_outlined, text: "Category"),
-              _bottonNavButtons(icons: Icons.book_outlined, text: "My Library"),
+              _bottomNavButtons(icons: Icons.book_outlined, text: "My Library"),
             ],
           ),
         ),
@@ -212,7 +214,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  Column _bottonNavButtons({
+  Column _bottomNavButtons({
     required IconData icons,
     required String text,
   }) {
@@ -266,6 +268,7 @@ class Home extends StatelessWidget {
     required String bookName,
     required String bookAuthor,
     required String bookRate,
+    bool isPrice = false,
   }) {
     return Container(
       height: 240,
@@ -318,25 +321,34 @@ class Home extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.star,
-                      color: Colors.yellow,
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      bookRate,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                isPrice
+                    ? Text(
+                        "\$ $bookRate",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      )
+                    : Row(
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            bookRate,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
