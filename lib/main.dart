@@ -1,9 +1,9 @@
+import 'package:book_store/Auth/SplashScreen.dart';
 import 'package:flutter/material.dart';
-
-import 'home screen/home.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: Splashscreen(),
     );
   }
 }
