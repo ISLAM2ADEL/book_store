@@ -1,0 +1,1 @@
+const imagePath = "lib/Images";
