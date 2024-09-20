@@ -37,7 +37,7 @@ class _SplashscreenState extends State<Splashscreen> {
             padding: const EdgeInsets.all(50.0),
             child: Center(
               child: Image.asset(
-                imagePath + "/images_processed.jpeg",
+                imagePath + "images_processed.jpeg",
                 fit: BoxFit.cover,
               ), // Correct path to the image
             ),
