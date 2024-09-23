@@ -1,6 +1,9 @@
+import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:book_store/const.dart';
+import 'package:book_store/custom%20bottom%20bar/custom_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -9,6 +12,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    final cubit = context.read<HomeCubit>();
     return Scaffold(
       backgroundColor: white,
       body: SingleChildScrollView(
@@ -95,16 +99,50 @@ class Home extends StatelessWidget {
               ),
               SizedBox(
                 width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _bookType(text: "Most popular"),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    _bookType(text: "For You"),
-                  ],
+                child: BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) {
+                    Choice myChoice = cubit.getChoice();
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          child: _bookType(
+                            text: "Most popular",
+                            containerColor: myChoice == Choice.mostPopular
+                                ? darkGreen
+                                : Colors.transparent,
+                            textColor: myChoice == Choice.mostPopular
+                                ? Colors.white
+                                : darkGreen,
+                            border:
+                                myChoice == Choice.mostPopular ? false : true,
+                          ),
+                          onTap: () {
+                            cubit.mostPopular();
+                          },
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                          child: _bookType(
+                            text: "For You",
+                            containerColor: myChoice == Choice.forYou
+                                ? darkGreen
+                                : Colors.transparent,
+                            textColor: myChoice == Choice.forYou
+                                ? Colors.white
+                                : darkGreen,
+                            border: myChoice == Choice.forYou ? false : true,
+                          ),
+                          onTap: () {
+                            cubit.forYou();
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
               const SizedBox(
@@ -130,20 +168,67 @@ class Home extends StatelessWidget {
               ),
               SizedBox(
                 width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _bookType(text: "Best Seller"),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    _bookType(text: "Latest"),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    _bookType(text: "Coming Soon"),
-                  ],
+                child: BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) {
+                    Book myBook = cubit.getBook();
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          child: _bookType(
+                            text: "Best Seller",
+                            containerColor: myBook == Book.bestSeller
+                                ? darkGreen
+                                : Colors.transparent,
+                            textColor: myBook == Book.bestSeller
+                                ? Colors.white
+                                : darkGreen,
+                            border: myBook == Book.bestSeller ? false : true,
+                          ),
+                          onTap: () {
+                            cubit.bestSeller();
+                          },
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                          child: _bookType(
+                            text: "Latest",
+                            containerColor: myBook == Book.latest
+                                ? darkGreen
+                                : Colors.transparent,
+                            textColor: myBook == Book.latest
+                                ? Colors.white
+                                : darkGreen,
+                            border: myBook == Book.latest ? false : true,
+                          ),
+                          onTap: () {
+                            cubit.latest();
+                          },
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                          child: _bookType(
+                            text: "Coming Soon",
+                            containerColor: myBook == Book.comingSoon
+                                ? darkGreen
+                                : Colors.transparent,
+                            textColor: myBook == Book.comingSoon
+                                ? Colors.white
+                                : darkGreen,
+                            border: myBook == Book.comingSoon ? false : true,
+                          ),
+                          onTap: () {
+                            cubit.comingSoon();
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
               const SizedBox(
@@ -191,48 +276,7 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        child: Container(
-          height: 80,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _bottomNavButtons(icons: CupertinoIcons.home, text: "Home"),
-              _bottomNavButtons(icons: CupertinoIcons.heart, text: "Favourite"),
-              _bottomNavButtons(
-                  icons: Icons.category_outlined, text: "Category"),
-              _bottomNavButtons(icons: Icons.book_outlined, text: "My Library"),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Column _bottomNavButtons({
-    required IconData icons,
-    required String text,
-  }) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icons,
-          size: 42,
-        ),
-        Text(
-          text,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 14,
-          ),
-        )
-      ],
+      bottomNavigationBar: const CustomBottomBar(),
     );
   }
 
@@ -359,17 +403,21 @@ class Home extends StatelessWidget {
 
   Widget _bookType({
     required String text,
+    required Color containerColor,
+    required Color textColor,
+    bool border = false,
   }) {
     return Container(
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: darkGreen,
+        color: containerColor,
         borderRadius: BorderRadius.circular(30),
+        border: border ? Border.all(color: darkGreen, width: 1.7) : null,
       ),
       child: Text(
         text,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: textColor,
           fontSize: 18,
         ),
       ),

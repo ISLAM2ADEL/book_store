@@ -1,5 +1,6 @@
 import 'package:book_store/Auth/OnBoardingScreen.dart';
 import 'package:book_store/Auth/SignUp_Screen/SignUP_Screen.dart';
+import 'package:book_store/home%20screen/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -161,7 +162,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Login Button
                 Center(
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Get.offAll(const Home());
+                    },
                     child: CreateAccContainer(
                       fontColor: Colors.white,
                       height: height * 0.06,
