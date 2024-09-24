@@ -12,6 +12,7 @@ import '../custom widget/custom_text_form.dart';
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
+  final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   @override
@@ -47,6 +48,7 @@ class LoginScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Form(
+            key: formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -135,7 +137,13 @@ class LoginScreen extends StatelessWidget {
                 // Login Button
                 Center(
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      if (formKey.currentState!.validate()) {
+                        print("go to home");
+                      } else {
+                        print("stay");
+                      }
+                    },
                     child: createAccContainer(
                       fontColor: Colors.white,
                       height: height * 0.06,

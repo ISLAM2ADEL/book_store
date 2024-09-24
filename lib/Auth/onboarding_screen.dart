@@ -175,7 +175,7 @@ class OnboardingPage extends StatelessWidget {
             ),
             child: Image.asset(
               "$path$imageUrl",
-              fit: BoxFit.fitHeight,
+              fit: BoxFit.fill,
               width: double.infinity,
             ),
           ),
