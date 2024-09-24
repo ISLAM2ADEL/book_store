@@ -13,6 +13,11 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool _obscurePassword = true;
+  final formkey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final nameController = TextEditingController();
+  final phoneController = TextEditingController();
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -53,6 +58,7 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Form(
+            key: formkey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -61,6 +67,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 // Name TextFormField
                 TextFormField(
+                  controller: nameController,
                   decoration: InputDecoration(
                     hintText: "Name",
                     hintStyle: TextStyle(color: Color(0xFF8D8D8D)),
@@ -71,6 +78,16 @@ class _SignupScreenState extends State<SignupScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide(color: Colors.grey.shade600),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                          BorderSide(color: Colors.red.shade300, width: 2),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                          BorderSide(color: Colors.red.shade600, width: 2),
                     ),
                     prefixIcon: Icon(
                       CupertinoIcons.person,
@@ -88,6 +105,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 // Phone TextFormField
                 TextFormField(
+                  controller: phoneController,
                   decoration: InputDecoration(
                     hintText: "Phone",
                     hintStyle: TextStyle(color: Color(0xFF8D8D8D)),
@@ -98,6 +116,16 @@ class _SignupScreenState extends State<SignupScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide(color: Colors.grey.shade600),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                          BorderSide(color: Colors.red.shade300, width: 2),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                          BorderSide(color: Colors.red.shade600, width: 2),
                     ),
                     prefixIcon: Icon(
                       CupertinoIcons.phone,
@@ -116,6 +144,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 // Email TextFormField
                 TextFormField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     hintText: "Email",
                     hintStyle: TextStyle(color: Color(0xFF8D8D8D)),
@@ -127,6 +156,16 @@ class _SignupScreenState extends State<SignupScreen> {
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide(color: Colors.grey.shade600),
                     ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                          BorderSide(color: Colors.red.shade300, width: 2),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                          BorderSide(color: Colors.red.shade600, width: 2),
+                    ),
                     prefixIcon: Icon(
                       CupertinoIcons.mail,
                       color: Color(0xFF8D8D8D),
@@ -137,13 +176,21 @@ class _SignupScreenState extends State<SignupScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
                     }
+                    // Regex for email validation
+                    final regex = RegExp(
+                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                    if (!regex.hasMatch(value)) {
+                      return 'Please enter a valid email address';
+                    }
                     return null;
                   },
                 ),
+
                 SizedBox(height: 20),
 
                 // Password TextFormField
                 TextFormField(
+                  controller: passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     hintText: "Password",
@@ -155,6 +202,16 @@ class _SignupScreenState extends State<SignupScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide(color: Colors.grey.shade600),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                          BorderSide(color: Colors.red.shade300, width: 2),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                          BorderSide(color: Colors.red.shade600, width: 2),
                     ),
                     prefixIcon: Icon(
                       CupertinoIcons.lock,
@@ -174,6 +231,16 @@ class _SignupScreenState extends State<SignupScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
                     }
+                    // Password validation
+                    if (value.length < 8) {
+                      return 'Password must be at least 8 characters';
+                    }
+                    if (!RegExp(r'(?=.*[A-Z])').hasMatch(value)) {
+                      return 'Password must contain at least one uppercase letter';
+                    }
+                    if (!RegExp(r'(?=.*\d)').hasMatch(value)) {
+                      return 'Password must contain at least one digit';
+                    }
                     return null;
                   },
                 ),
@@ -182,7 +249,13 @@ class _SignupScreenState extends State<SignupScreen> {
                 // Sign Up Button
                 Center(
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      if (formkey.currentState?.validate() ?? false) {
+                        print("Login successful");
+                      } else {
+                        print("Validation failed");
+                      }
+                    },
                     child: CreateAccContainer(
                       fontColor: Colors.white,
                       height: height * 0.06,
@@ -214,7 +287,6 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 SizedBox(height: 20),
 
-                // Login Link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
