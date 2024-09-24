@@ -48,6 +48,13 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
   enefty_icons: ^1.0.7
   icons_plus: ^5.0.0
+  #
+  firebase_core: ^3.5.0
+  cloud_firestore: ^5.4.2
+  firebase_storage: ^12.3.1
+  firebase_messaging: ^15.1.2
+  firebase_auth: ^5.3.0
+  google_sign_in: ^6.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
