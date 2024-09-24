@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../const.dart';
-import 'OnBoardingScreen.dart';
+import 'onboarding_screen.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -17,8 +17,8 @@ class _SplashscreenState extends State<Splashscreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 3), () {
-      Get.off(() => Onboardingscreen());
+    Timer(const Duration(seconds: 3), () {
+      Get.off(() => const OnboardingScreen());
     });
   }
 
@@ -27,7 +27,7 @@ class _SplashscreenState extends State<Splashscreen> {
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Color(0xFFeae9e5),
+      backgroundColor: const Color(0xFFeae9e5),
       body: Column(
         children: [
           SizedBox(
@@ -37,7 +37,7 @@ class _SplashscreenState extends State<Splashscreen> {
             padding: const EdgeInsets.all(50.0),
             child: Center(
               child: Image.asset(
-                imagePath + "images_processed.jpeg",
+                "${imagePath}images_processed.jpeg",
                 fit: BoxFit.cover,
               ), // Correct path to the image
             ),

@@ -1,42 +1,28 @@
-import 'package:book_store/Auth/OnBoardingScreen.dart';
-import 'package:book_store/Auth/SignUp_Screen/SignUP_Screen.dart';
+import 'package:book_store/Auth/onboarding_screen.dart';
+import 'package:book_store/Auth/SignUp_Screen/sign_up_screen.dart';
+import 'package:book_store/book%20space%20cubit/form%20cubit/text_form_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+import '../custom widget/custom_text_form.dart';
 
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
+class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
 
-class _LoginScreenState extends State<LoginScreen> {
-  bool _obscurePassword = true;
-  bool _rememberMe = false;
-
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscurePassword = !_obscurePassword;
-    });
-  }
-
-  void _toggleRememberMe(bool? value) {
-    setState(() {
-      _rememberMe = value ?? false;
-    });
-  }
-
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-
+    final cubit = context.read<TextFormCubit>();
     return Scaffold(
-      backgroundColor: Color(0xFFF1EEE9),
+      backgroundColor: const Color(0xFFF1EEE9),
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Login",
           style: TextStyle(
             fontSize: 24,
@@ -45,13 +31,13 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFFF1EEE9),
+        backgroundColor: const Color(0xFFF1EEE9),
         elevation: 0,
         leading: InkWell(
           onTap: () {
-            Get.to(Onboardingscreen());
+            Get.to(const OnboardingScreen());
           },
-          child: Icon(
+          child: const Icon(
             Icons.arrow_back,
             color: Color(0xFF3E463B),
           ),
@@ -68,69 +54,50 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: height * 0.07,
                 ),
                 // Email TextFormField
-                TextFormField(
-                  decoration: InputDecoration(
-                    hintText: "Email",
-                    hintStyle: TextStyle(color: Color(0xFF8D8D8D)),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: Colors.grey.shade600),
-                    ),
-                    prefixIcon: Icon(
-                      CupertinoIcons.mail,
-                      color: Color(0xFF8D8D8D),
-                    ),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
+                CustomTextForm(
+                  hintText: "Email",
+                  controller: emailController,
+                  icon: CupertinoIcons.mail,
+                  isEmail: true,
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
                       return 'Please enter your email';
                     }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-
-                // Password TextFormField
-                TextFormField(
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    hintText: "Password",
-                    hintStyle: TextStyle(color: Color(0xFF8D8D8D)),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: Colors.grey.shade600),
-                    ),
-                    prefixIcon: Icon(
-                      CupertinoIcons.lock,
-                      color: Color(0xFF8D8D8D),
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Color(0xFF8D8D8D),
-                      ),
-                      onPressed: _togglePasswordVisibility,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                    // Regex for email validation
+                    final regex = RegExp(
+                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                    if (!regex.hasMatch(val)) {
+                      return 'Please enter a valid email address';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 20),
+
+                // Password TextFormField
+                CustomTextForm(
+                  hintText: "Password",
+                  controller: passwordController,
+                  icon: CupertinoIcons.lock,
+                  isPassword: true,
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    // Password validation
+                    if (val.length < 8) {
+                      return 'Password must be at least 8 characters';
+                    }
+                    if (!RegExp(r'(?=.*[A-Z])').hasMatch(val)) {
+                      return 'Password must contain at least one uppercase letter';
+                    }
+                    if (!RegExp(r'(?=.*\d)').hasMatch(val)) {
+                      return 'Password must contain at least one digit';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
 
                 // Remember me and Forget Password
                 Row(
@@ -138,16 +105,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Row(
                       children: [
-                        Checkbox(
-                          value: _rememberMe,
-                          onChanged: _toggleRememberMe,
+                        BlocBuilder<TextFormCubit, TextFormState>(
+                          builder: (context, state) {
+                            bool rememberMe = cubit.getRememberMe();
+                            return Checkbox(
+                              value: rememberMe,
+                              onChanged: (value) {
+                                cubit.changeRememberMe();
+                              },
+                            );
+                          },
                         ),
-                        Text("Remember me"),
+                        const Text("Remember me"),
                       ],
                     ),
                     TextButton(
                       onPressed: () {},
-                      child: Text(
+                      child: const Text(
                         "Forget password?",
                         style: TextStyle(
                           color: Color(0xFF8D8D8D),
@@ -156,26 +130,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 50),
+                const SizedBox(height: 50),
 
                 // Login Button
                 Center(
                   child: InkWell(
                     onTap: () {},
-                    child: CreateAccContainer(
+                    child: createAccContainer(
                       fontColor: Colors.white,
                       height: height * 0.06,
                       width: width * 0.87,
                       text: "Login",
-                      color: Color(0xFF3E463B),
+                      color: const Color(0xFF3E463B),
                       isBorder: false,
                     ),
                   ),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
 
                 // Social Icons Row
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
@@ -191,18 +165,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 // Sign Up Link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Don’t have an account?"),
+                    const Text("Don’t have an account?"),
                     TextButton(
                       onPressed: () {
-                        Get.to(SignupScreen());
+                        Get.to(SignUpScreen());
                       },
-                      child: Text(
+                      child: const Text(
                         "Sign Up",
                         style: TextStyle(
                           color: Color(0xFF475144),
@@ -221,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-Container CreateAccContainer({
+Container createAccContainer({
   required double height,
   required double width,
   required String text,
