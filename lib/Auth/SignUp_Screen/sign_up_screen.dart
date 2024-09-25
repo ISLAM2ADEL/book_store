@@ -1,4 +1,5 @@
 import 'package:book_store/Auth/LogIn_Screen/login_screen.dart';
+import 'package:book_store/firebase/firebase_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +14,7 @@ class SignUpScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-
+  FirebaseForm firebaseForm = FirebaseForm();
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -131,9 +132,8 @@ class SignUpScreen extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       if (formKey.currentState?.validate() ?? false) {
-                        print("Login successful");
-                      } else {
-                        print("Validation failed");
+                        firebaseForm.registerUser(context, emailController.text,
+                            passwordController.text);
                       }
                     },
                     child: createAccContainer(

@@ -1,6 +1,7 @@
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/custom%20bottom%20bar/custom_bottom_bar.dart';
+import 'package:book_store/firebase/firebase_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -575,16 +576,17 @@ class Home extends StatelessWidget {
   }
 
   Widget _upperBar() {
-    return const Row(
+    FirebaseForm firebaseForm = FirebaseForm();
+    return Row(
       children: [
-        CircleAvatar(
+        const CircleAvatar(
           radius: 22,
           backgroundImage: AssetImage("${path}user image.png"),
         ),
-        SizedBox(
+        const SizedBox(
           width: 17,
         ),
-        Text(
+        const Text(
           "Hi, Aya!",
           style: TextStyle(
             color: Colors.black,
@@ -592,10 +594,15 @@ class Home extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Spacer(),
-        Icon(
-          Icons.dark_mode_outlined,
-          size: 28,
+        const Spacer(),
+        InkWell(
+          child: const Icon(
+            Icons.dark_mode_outlined,
+            size: 28,
+          ),
+          onTap: () {
+            firebaseForm.signOutUser();
+          },
         ),
       ],
     );

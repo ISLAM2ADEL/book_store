@@ -1,6 +1,7 @@
 import 'package:book_store/Auth/onboarding_screen.dart';
 import 'package:book_store/Auth/SignUp_Screen/sign_up_screen.dart';
 import 'package:book_store/book%20space%20cubit/form%20cubit/text_form_cubit.dart';
+import 'package:book_store/firebase/firebase_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +21,7 @@ class LoginScreen extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final cubit = context.read<TextFormCubit>();
+    FirebaseForm firebaseForm = FirebaseForm();
     return Scaffold(
       backgroundColor: const Color(0xFFF1EEE9),
       appBar: AppBar(
@@ -139,9 +141,8 @@ class LoginScreen extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       if (formKey.currentState!.validate()) {
-                        print("go to home");
-                      } else {
-                        print("stay");
+                        firebaseForm.signInUser(
+                            emailController.text, passwordController.text);
                       }
                     },
                     child: createAccContainer(
