@@ -1,5 +1,5 @@
 import 'package:book_store/Auth/LogIn_Screen/login_screen.dart';
-import 'package:book_store/firebase/firebase_form.dart';
+import 'package:book_store/firebase/firebase%20auth/firebase_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -149,19 +149,24 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 // Social Icons Row
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Bootstrap.facebook,
                       color: Colors.blue,
                       size: 40,
                     ),
-                    SizedBox(width: 20),
-                    Icon(
-                      Bootstrap.google,
-                      color: Colors.red,
-                      size: 40,
+                    const SizedBox(width: 20),
+                    InkWell(
+                      child: const Icon(
+                        Bootstrap.google,
+                        color: Colors.red,
+                        size: 40,
+                      ),
+                      onTap: () {
+                        firebaseForm.signInWithGoogle();
+                      },
                     ),
                   ],
                 ),

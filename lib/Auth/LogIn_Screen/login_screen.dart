@@ -1,13 +1,12 @@
 import 'package:book_store/Auth/onboarding_screen.dart';
 import 'package:book_store/Auth/SignUp_Screen/sign_up_screen.dart';
 import 'package:book_store/book%20space%20cubit/form%20cubit/text_form_cubit.dart';
-import 'package:book_store/firebase/firebase_form.dart';
+import 'package:book_store/firebase/firebase%20auth/firebase_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
-
 import '../custom widget/custom_text_form.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -16,6 +15,7 @@ class LoginScreen extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -124,7 +124,9 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        firebaseForm.forgetPassword(emailController.text);
+                      },
                       child: const Text(
                         "Forget password?",
                         style: TextStyle(
@@ -141,8 +143,8 @@ class LoginScreen extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       if (formKey.currentState!.validate()) {
-                        firebaseForm.signInUser(
-                            emailController.text, passwordController.text);
+                        firebaseForm.signInUser(context, emailController.text,
+                            passwordController.text);
                       }
                     },
                     child: createAccContainer(
@@ -158,19 +160,24 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 // Social Icons Row
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Bootstrap.facebook,
                       color: Colors.blue,
                       size: 40,
                     ),
-                    SizedBox(width: 20),
-                    Icon(
-                      Bootstrap.google,
-                      color: Colors.red,
-                      size: 40,
+                    const SizedBox(width: 20),
+                    InkWell(
+                      child: const Icon(
+                        Bootstrap.google,
+                        color: Colors.red,
+                        size: 40,
+                      ),
+                      onTap: () {
+                        firebaseForm.signInWithGoogle();
+                      },
                     ),
                   ],
                 ),

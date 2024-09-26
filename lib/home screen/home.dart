@@ -1,7 +1,7 @@
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/custom%20bottom%20bar/custom_bottom_bar.dart';
-import 'package:book_store/firebase/firebase_form.dart';
+import 'package:book_store/firebase/firebase%20auth/firebase_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,7 +63,7 @@ class Home extends StatelessWidget {
                 height: 20,
               ),
               Container(
-                height: height * .27,
+                height: height * .30,
                 width: width * .9,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -74,23 +74,29 @@ class Home extends StatelessWidget {
                   child: Column(
                     children: [
                       _recentBooks(
-                          bookImage: "hamlet.png",
-                          bookText: "Hamlet",
-                          bookRemaining: "16 h 45 min"),
+                        bookImage: "hamlet.png",
+                        bookText: "Hamlet",
+                        bookRemaining: "16 h 45 min",
+                        height: height,
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
                       _recentBooks(
-                          bookImage: "the island.png",
-                          bookText: "The island",
-                          bookRemaining: "16 h 45 min"),
+                        bookImage: "the island.png",
+                        bookText: "The island",
+                        bookRemaining: "16 h 45 min",
+                        height: height,
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
                       _recentBooks(
-                          bookImage: "hunger.png",
-                          bookText: "Hunger",
-                          bookRemaining: "16 h 45 min"),
+                        bookImage: "hunger.png",
+                        bookText: "Hunger",
+                        bookRemaining: "16 h 45 min",
+                        height: height,
+                      ),
                     ],
                   ),
                 ),
@@ -429,6 +435,7 @@ class Home extends StatelessWidget {
     required String bookImage,
     required String bookText,
     required String bookRemaining,
+    required double height,
   }) {
     return Row(
       children: [
@@ -437,7 +444,7 @@ class Home extends StatelessWidget {
           child: Row(
             children: [
               SizedBox(
-                height: 50,
+                height: height * .063,
                 width: 50,
                 child: Image.asset("$path$bookImage"),
               ),

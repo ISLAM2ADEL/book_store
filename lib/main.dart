@@ -1,4 +1,6 @@
 import 'package:book_store/Auth/splash_screen.dart';
+import 'package:book_store/admin%20screens/add%20book/add_book.dart';
+import 'package:book_store/book%20space%20cubit/admin%20cubit/bottom%20bar/admin_bar_cubit.dart';
 import 'package:book_store/book%20space%20cubit/awesome%20cubit/awesome_cubit.dart';
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
 import 'package:book_store/book%20space%20cubit/form%20cubit/text_form_cubit.dart';
@@ -9,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'admin screens/admin const.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,12 +59,18 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => AwesomeCubit(),
         ),
+        BlocProvider(
+          create: (context) => AdminBarCubit(),
+        ),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        home: (FirebaseAuth.instance.currentUser == null)
-            ? Splashscreen()
-            : Home(),
+        home: (FirebaseAuth.instance.currentUser == null ||
+                !FirebaseAuth.instance.currentUser!.emailVerified)
+            ? const Splashscreen()
+            : FirebaseAuth.instance.currentUser?.email == adminEmail
+                ? AddBook()
+                : const Home(),
       ),
     );
   }
