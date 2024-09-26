@@ -133,7 +133,7 @@ class AddBook extends StatelessWidget {
                     InkWell(
                       child: Container(
                         height: 50,
-                        width: 200,
+                        width: width * .5,
                         decoration: BoxDecoration(
                           color: white,
                           borderRadius: BorderRadius.circular(30.0),

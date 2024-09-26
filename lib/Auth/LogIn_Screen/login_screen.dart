@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 
+import '../../firebase/firebase auth/firebase_form.dart';
 import '../custom widget/custom_text_form.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -20,6 +21,8 @@ class LoginScreen extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final cubit = context.read<TextFormCubit>();
+    FirebaseForm firebaseAuth = FirebaseForm();
+
     return Scaffold(
       backgroundColor: const Color(0xFFF1EEE9),
       appBar: AppBar(
@@ -122,7 +125,9 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        firebaseAuth.forgetPassword(emailController.text);
+                      },
                       child: const Text(
                         "Forget password?",
                         style: TextStyle(
@@ -139,9 +144,8 @@ class LoginScreen extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       if (formKey.currentState!.validate()) {
-                        print("go to home");
-                      } else {
-                        print("stay");
+                        firebaseAuth.signInUser(context, emailController.text,
+                            passwordController.text);
                       }
                     },
                     child: createAccContainer(
@@ -157,19 +161,24 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 // Social Icons Row
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Bootstrap.facebook,
                       color: Colors.blue,
                       size: 40,
                     ),
-                    SizedBox(width: 20),
-                    Icon(
-                      Bootstrap.google,
-                      color: Colors.red,
-                      size: 40,
+                    const SizedBox(width: 20),
+                    InkWell(
+                      child: const Icon(
+                        Bootstrap.google,
+                        color: Colors.red,
+                        size: 40,
+                      ),
+                      onTap: () {
+                        firebaseAuth.signInWithGoogle();
+                      },
                     ),
                   ],
                 ),
