@@ -1,10 +1,13 @@
-import 'package:book_store/Auth/onboarding_screen.dart';
 import 'package:book_store/Auth/SignUp_Screen/sign_up_screen.dart';
+import 'package:book_store/Auth/onboarding_screen.dart';
 import 'package:book_store/book%20space%20cubit/form%20cubit/text_form_cubit.dart';
+import 'package:book_store/home%20screen/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:icons_plus/icons_plus.dart';
 
 import '../custom widget/custom_text_form.dart';
@@ -15,6 +18,7 @@ class LoginScreen extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -90,9 +94,6 @@ class LoginScreen extends StatelessWidget {
                     if (val.length < 8) {
                       return 'Password must be at least 8 characters';
                     }
-                    if (!RegExp(r'(?=.*[A-Z])').hasMatch(val)) {
-                      return 'Password must contain at least one uppercase letter';
-                    }
                     if (!RegExp(r'(?=.*\d)').hasMatch(val)) {
                       return 'Password must contain at least one digit';
                     }
@@ -122,7 +123,24 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        if (emailController.text == "") {
+                          Get.snackbar(
+                              "Empty Email field", "Please Fill Email Field ",
+                              barBlur: 30);
+                        } else {
+                          try {
+                            await FirebaseAuth.instance.sendPasswordResetEmail(
+                                email: emailController.text);
+                          } catch (e) {
+                            print(e);
+                          }
+                          ;
+
+                          Get.snackbar("Reset Password", "Check Your Inbox",
+                              barBlur: 30);
+                        }
+                      },
                       child: const Text(
                         "Forget password?",
                         style: TextStyle(
@@ -137,11 +155,25 @@ class LoginScreen extends StatelessWidget {
                 // Login Button
                 Center(
                   child: InkWell(
-                    onTap: () {
-                      if (formKey.currentState!.validate()) {
-                        print("go to home");
-                      } else {
-                        print("stay");
+                    onTap: () async {
+                      if (formKey.currentState?.validate() ?? false) {
+                        try {
+                          final credential = await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                                  email: emailController.text,
+                                  password: passwordController.text);
+                          if (credential.user!.emailVerified) {
+                            Get.offAll(() => const Home());
+                          } else {
+                            Get.snackbar('Error', 'Verify Your Email.');
+                          }
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'user-not-found') {
+                            print('No user found for that email.');
+                          } else if (e.code == 'wrong-password') {
+                            print('Wrong password provided for that user.');
+                          }
+                        }
                       }
                     },
                     child: createAccContainer(
@@ -157,19 +189,24 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 // Social Icons Row
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Bootstrap.facebook,
                       color: Colors.blue,
                       size: 40,
                     ),
-                    SizedBox(width: 20),
-                    Icon(
-                      Bootstrap.google,
-                      color: Colors.red,
-                      size: 40,
+                    const SizedBox(width: 20),
+                    InkWell(
+                      onTap: () {
+                        signInWithGoogle();
+                      },
+                      child: const Icon(
+                        Bootstrap.google,
+                        color: Colors.red,
+                        size: 40,
+                      ),
                     ),
                   ],
                 ),
@@ -230,4 +267,24 @@ Container createAccContainer({
       ),
     ),
   );
+}
+
+Future signInWithGoogle() async {
+  // Trigger the authentication flow
+  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  if (googleUser == null) {
+    return;
+  }
+  // Obtain the auth details from the request
+  final GoogleSignInAuthentication? googleAuth =
+      await googleUser.authentication;
+
+  // Create a new credential
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth?.accessToken,
+    idToken: googleAuth?.idToken,
+  );
+  // Once signed in, return the UserCredential
+  await FirebaseAuth.instance.signInWithCredential(credential);
+  Get.offAll(const Home());
 }

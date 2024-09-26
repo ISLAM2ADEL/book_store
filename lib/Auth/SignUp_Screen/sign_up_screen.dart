@@ -1,4 +1,5 @@
 import 'package:book_store/Auth/LogIn_Screen/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import '../custom widget/custom_text_form.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({super.key});
+
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -129,11 +131,40 @@ class SignUpScreen extends StatelessWidget {
                 // Sign Up Button
                 Center(
                   child: InkWell(
-                    onTap: () {
+                    onTap: () async {
                       if (formKey.currentState?.validate() ?? false) {
-                        print("Login successful");
-                      } else {
-                        print("Validation failed");
+                        try {
+                          // Attempt to sign up the user
+                          final credential = await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          );
+
+                          // You can now access the user's details
+                          print("User signed up: ${credential.user?.email}");
+                          FirebaseAuth.instance.currentUser!
+                              .sendEmailVerification();
+
+                          Get.offAll(() => LoginScreen());
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'weak-password') {
+                            Get.snackbar(
+                                'Error', 'The password provided is too weak.');
+                          } else if (e.code == 'email-already-in-use') {
+                            Get.snackbar('Error',
+                                'The account already exists for that email.');
+                          } else if (e.code == 'invalid-email') {
+                            Get.snackbar(
+                                'Error', 'The email address is not valid.');
+                          } else {
+                            Get.snackbar('Error',
+                                'An unexpected error occurred: ${e.message}');
+                          }
+                        } catch (e) {
+                          Get.snackbar('Error',
+                              'An error occurred. Please try again later.');
+                        }
                       }
                     },
                     child: createAccContainer(
@@ -149,9 +180,9 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 // Social Icons Row
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Icon(
                       Bootstrap.facebook,
                       color: Colors.blue,
