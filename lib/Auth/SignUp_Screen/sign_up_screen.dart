@@ -1,5 +1,4 @@
 import 'package:book_store/Auth/LogIn_Screen/login_screen.dart';
-import 'package:book_store/firebase/firebase%20auth/firebase_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +13,7 @@ class SignUpScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  FirebaseForm firebaseForm = FirebaseForm();
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -132,8 +131,9 @@ class SignUpScreen extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       if (formKey.currentState?.validate() ?? false) {
-                        firebaseForm.registerUser(context, emailController.text,
-                            passwordController.text);
+                        print("Login successful");
+                      } else {
+                        print("Validation failed");
                       }
                     },
                     child: createAccContainer(
@@ -149,24 +149,19 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 // Social Icons Row
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Bootstrap.facebook,
                       color: Colors.blue,
                       size: 40,
                     ),
-                    const SizedBox(width: 20),
-                    InkWell(
-                      child: const Icon(
-                        Bootstrap.google,
-                        color: Colors.red,
-                        size: 40,
-                      ),
-                      onTap: () {
-                        firebaseForm.signInWithGoogle();
-                      },
+                    SizedBox(width: 20),
+                    Icon(
+                      Bootstrap.google,
+                      color: Colors.red,
+                      size: 40,
                     ),
                   ],
                 ),
