@@ -13,6 +13,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'admin screens/admin const.dart';
+import 'book space cubit/admin cubit/add book/image_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +62,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => AdminBarCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ImageCubit(),
         ),
       ],
       child: GetMaterialApp(
