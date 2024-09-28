@@ -1,3 +1,4 @@
+import 'package:book_store/Auth/forget_screen/Cubit/forget_cubit.dart';
 import 'package:book_store/Auth/splash_screen.dart';
 import 'package:book_store/admin%20screens/add%20book/add_book.dart';
 import 'package:book_store/book%20space%20cubit/admin%20cubit/bottom%20bar/admin_bar_cubit.dart';
@@ -65,6 +66,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => ImageCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ForgetPasswordCubit(),
         ),
       ],
       child: GetMaterialApp(

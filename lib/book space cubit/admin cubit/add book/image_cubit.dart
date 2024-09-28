@@ -8,10 +8,18 @@ class ImageCubit extends Cubit<ImageState> {
   ImageCubit() : super(ImageInitial());
 
   bool isImage = false;
+  bool isPicked = false;
   FirebaseBook firebaseBook = FirebaseBook();
 
-  Future<bool> uploadImage() async {
-    return await firebaseBook.pickImage();
+  Future<void> uploadImage() async {
+    isImage = await firebaseBook.pickImage();
+    if (isImage) {
+      isPicked = true;
+    }
+  }
+
+  bool getIsPicked() {
+    return isPicked;
   }
 
   void addBook({
@@ -37,5 +45,11 @@ class ImageCubit extends Cubit<ImageState> {
     } catch (e) {
       emit(ImageFailure(message: e.toString()));
     }
+  }
+
+  void resetImagePicker() {
+    isPicked = false;
+
+    emit(ImageInitial());
   }
 }

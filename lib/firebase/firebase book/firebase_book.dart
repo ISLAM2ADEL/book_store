@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirebaseBook {
   String? imageUrl = ""; // URL for the uploaded image
   File? selectedImageFile; // File for the chosen image
-
   // Method to pick an image
   Future<bool> pickImage() async {
     ImagePicker imagePicker = ImagePicker();
@@ -43,7 +42,6 @@ class FirebaseBook {
       // Success: get the download URL
       imageUrl = await referenceImageToUpload.getDownloadURL();
       print('Image uploaded successfully: $imageUrl');
-
       await FirebaseFirestore.instance.collection('books').add({
         'name': bookName,
         'description': description,
@@ -56,5 +54,9 @@ class FirebaseBook {
     } catch (error) {
       throw Exception('Error occurred while uploading image: $error');
     }
+  }
+
+  void resetImage() {
+    selectedImageFile = null;
   }
 }

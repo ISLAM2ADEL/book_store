@@ -1,3 +1,4 @@
+import 'package:book_store/Auth/forget_screen/forget_screen.dart';
 import 'package:book_store/Auth/onboarding_screen.dart';
 import 'package:book_store/Auth/SignUp_Screen/sign_up_screen.dart';
 import 'package:book_store/book%20space%20cubit/form%20cubit/text_form_cubit.dart';
@@ -126,7 +127,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        firebaseAuth.forgetPassword(emailController.text);
+                        Get.to(ForgetScreen());
                       },
                       child: const Text(
                         "Forget password?",

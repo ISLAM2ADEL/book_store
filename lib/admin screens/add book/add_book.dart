@@ -16,11 +16,13 @@ class AddBook extends StatelessWidget {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController rateController = TextEditingController();
   final GlobalKey<FormState> addBookFormKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final cubit = context.read<ImageCubit>();
+
     return Scaffold(
       backgroundColor: white,
       bottomNavigationBar: const AdminNavBar(),
@@ -35,207 +37,209 @@ class AddBook extends StatelessWidget {
             key: addBookFormKey,
             child: BlocBuilder<ImageCubit, ImageState>(
               builder: (context, state) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (state is ImageSuccessful) {
+                    Get.snackbar(
+                      "Success",
+                      "Image loaded successfully!",
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
+                    );
+                    cubit.resetImagePicker();
+                  }
+                  if (state is ImageFailure) {
+                    Get.snackbar(
+                      "Failure",
+                      state.message,
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                    cubit.resetImagePicker();
+                  }
+                });
+
                 if (state is ImageLoading) {
-                  return Transform.translate(
-                    offset: Offset(0, height * .45),
+                  return SizedBox(
+                    height: height * 0.8, // Adjust as needed
                     child: const Center(
                       child: CircularProgressIndicator(),
                     ),
                   );
                 }
-                if (state is ImageSuccessful) {
-                  Get.snackbar(
-                    "Success",
-                    "Image loaded successfully!",
-                    backgroundColor: Colors.green,
-                    colorText: Colors.white,
-                  );
-                }
-                if (state is ImageFailure) {
-                  Get.snackbar(
-                    "Failure",
-                    state.message,
-                    backgroundColor: Colors.red,
-                    colorText: Colors.white,
-                  );
-                }
-                bool? isPicked;
-                return Column(
-                  children: [
-                    _formBuild(
-                        text: "Add Book Name :",
-                        hintText: "Book Name",
-                        icons: Icons.book,
-                        controller: bookController,
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            return "This field can not be empty";
-                          }
-                          return null;
-                        }),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    _formBuild(
-                        text: "Add Book Description :",
-                        hintText: "Book Description",
-                        icons: Icons.description,
-                        controller: descriptionController,
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            return "This field can not be empty";
-                          }
-                          return null;
-                        }),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    _formBuild(
-                        text: "Add Book Author :",
-                        hintText: "Author's name",
-                        icons: Icons.drive_file_rename_outline,
-                        controller: authorController,
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            return "This field can not be empty";
-                          }
-                          return null;
-                        }),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    _formBuild(
-                        text: "Add Book Category :",
-                        hintText: "Book Category",
-                        icons: Icons.category,
-                        controller: categoryController,
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            return "This field can not be empty";
-                          }
-                          return null;
-                        }),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    _formBuild(
-                        text: "Add Book Price :",
-                        hintText: "Book Price",
-                        icons: Icons.attach_money,
-                        controller: priceController,
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            return "This field can not be empty";
-                          }
-                          return null;
-                        }),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    _formBuild(
-                        text: "Add Book Rate :",
-                        hintText: "Book Rate",
-                        icons: Icons.star_rate,
-                        controller: rateController,
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            return "This field can not be empty";
-                          }
-                          return null;
-                        }),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Add Book Image :",
-                          style: TextStyle(
-                            color: darkGreen,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        InkWell(
-                          child: Container(
-                            height: 50,
-                            width: width * .5,
-                            decoration: BoxDecoration(
-                              color: white,
-                              borderRadius: BorderRadius.circular(30.0),
-                              border: Border.all(color: darkGreen, width: 2.0),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                "Upload Image",
-                                style: TextStyle(
-                                  color: darkGreen,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          onTap: () async {
-                            isPicked = await cubit.uploadImage();
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    InkWell(
-                        child: Container(
-                          width: width * .85,
-                          height: 65,
-                          decoration: BoxDecoration(
-                            color: darkGreen,
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Add Book",
-                              style: TextStyle(
-                                color: white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                              ),
-                            ),
-                          ),
-                        ),
-                        onTap: () async {
-                          if (addBookFormKey.currentState!.validate()) {
-                            if (isPicked ?? false) {
-                              cubit.addBook(
-                                bookName: bookController.text,
-                                description: descriptionController.text,
-                                author: authorController.text,
-                                category: categoryController.text,
-                                price: priceController.text,
-                                rate: rateController.text,
-                              );
-                            } else {
-                              Get.snackbar(
-                                "Image not found",
-                                "Please Upload Book Image",
-                                colorText: Colors.white,
-                                backgroundColor: Colors.red,
-                              );
-                            }
-                          }
-                        }),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  ],
-                );
+
+                return _buildFormContent(cubit, width);
               },
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildFormContent(ImageCubit cubit, double width) {
+    return Column(
+      children: [
+        _formBuild(
+          text: "Add Book Name :",
+          hintText: "Book Name",
+          icons: Icons.book,
+          controller: bookController,
+          validator: (val) {
+            if (val!.isEmpty) {
+              return "This field can not be empty";
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 15),
+        _formBuild(
+          text: "Add Book Description :",
+          hintText: "Book Description",
+          icons: Icons.description,
+          controller: descriptionController,
+          validator: (val) {
+            if (val!.isEmpty) {
+              return "This field can not be empty";
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 15),
+        _formBuild(
+          text: "Add Book Author :",
+          hintText: "Author's name",
+          icons: Icons.drive_file_rename_outline,
+          controller: authorController,
+          validator: (val) {
+            if (val!.isEmpty) {
+              return "This field can not be empty";
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 15),
+        _formBuild(
+          text: "Add Book Category :",
+          hintText: "Book Category",
+          icons: Icons.category,
+          controller: categoryController,
+          validator: (val) {
+            if (val!.isEmpty) {
+              return "This field can not be empty";
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 15),
+        _formBuild(
+          text: "Add Book Price :",
+          hintText: "Book Price",
+          icons: Icons.attach_money,
+          controller: priceController,
+          validator: (val) {
+            if (val!.isEmpty) {
+              return "This field can not be empty";
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 15),
+        _formBuild(
+          text: "Add Book Rate :",
+          hintText: "Book Rate",
+          icons: Icons.star_rate,
+          controller: rateController,
+          validator: (val) {
+            if (val!.isEmpty) {
+              return "This field can not be empty";
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "Add Book Image :",
+              style: TextStyle(
+                color: darkGreen,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            InkWell(
+              child: Container(
+                height: 50,
+                width: width * .5,
+                decoration: BoxDecoration(
+                  color: white,
+                  borderRadius: BorderRadius.circular(30.0),
+                  border: Border.all(color: darkGreen, width: 2.0),
+                ),
+                child: const Center(
+                  child: Text(
+                    "Upload Image",
+                    style: TextStyle(
+                      color: darkGreen,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              onTap: () async {
+                await cubit.uploadImage();
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        InkWell(
+          child: Container(
+            width: width * .85,
+            height: 65,
+            decoration: BoxDecoration(
+              color: darkGreen,
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            child: const Center(
+              child: Text(
+                "Add Book",
+                style: TextStyle(
+                  color: white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                ),
+              ),
+            ),
+          ),
+          onTap: () async {
+            if (addBookFormKey.currentState!.validate()) {
+              bool isPicked = cubit.getIsPicked();
+              if (isPicked) {
+                cubit.addBook(
+                  bookName: bookController.text,
+                  description: descriptionController.text,
+                  author: authorController.text,
+                  category: categoryController.text,
+                  price: priceController.text,
+                  rate: rateController.text,
+                );
+                Get.offAll(AddBook());
+              } else {
+                Get.snackbar(
+                  "Image not found",
+                  "Please Upload Book Image",
+                  colorText: Colors.white,
+                  backgroundColor: Colors.red,
+                );
+              }
+            }
+          },
+        ),
+        const SizedBox(height: 15),
+      ],
     );
   }
 
