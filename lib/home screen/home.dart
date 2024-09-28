@@ -1,3 +1,4 @@
+import 'package:book_store/Book_description/description.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/custom%20bottom%20bar/custom_bottom_bar.dart';
@@ -5,6 +6,7 @@ import 'package:book_store/firebase/firebase%20auth/firebase_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -160,11 +162,16 @@ class Home extends StatelessWidget {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: 15,
-                  itemBuilder: (context, index) => _bookBuild(
-                      bookImage: "hunger.png",
-                      bookName: "The Hunger",
-                      bookAuthor: "Patrick Mauriee",
-                      bookRate: "4.5"),
+                  itemBuilder: (context, index) => InkWell(
+                    child: _bookBuild(
+                        bookImage: "hunger.png",
+                        bookName: "The Hunger",
+                        bookAuthor: "Patrick Mauriee",
+                        bookRate: "4.5"),
+                    onTap: () {
+                      Get.to(const BookDescription());
+                    },
+                  ),
                   separatorBuilder: (context, index) => const SizedBox(
                     width: 8,
                   ),
