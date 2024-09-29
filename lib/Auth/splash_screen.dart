@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../admin screens/add book/add_book.dart';
+import '../admin screens/admin const.dart';
 import '../const.dart';
+import '../home screen/home.dart';
 import 'onboarding_screen.dart';
 
 class Splashscreen extends StatefulWidget {
@@ -18,7 +22,12 @@ class _SplashscreenState extends State<Splashscreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Get.off(() => const OnboardingScreen());
+      Get.off(() => (FirebaseAuth.instance.currentUser == null ||
+              !FirebaseAuth.instance.currentUser!.emailVerified)
+          ? const OnboardingScreen()
+          : FirebaseAuth.instance.currentUser?.email == adminEmail
+              ? AddBook()
+              : const Home());
     });
   }
 
