@@ -8,7 +8,7 @@ class BookDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF1EEE9),
+      backgroundColor: const Color(0xFFF1EEE9),
       appBar: AppBar(
         leading: const Icon(
           Icons.arrow_back_ios,
@@ -31,11 +31,11 @@ class BookDescription extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 30, right: 30, left: 30),
                 child: Center(child: Image.asset("${path}book.png")),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               _BookName("The lliands", "Patrick Mauriee"),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Container(
@@ -57,18 +57,18 @@ class BookDescription extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               _BookDescription(),
 
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               Column(
                 //crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       Text(
                         "Tags",
@@ -102,13 +102,13 @@ class BookDescription extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               // Row of similar books
               Row(
                 children: [
-                  Text(
+                  const Text(
                     "Similar Books",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -116,16 +116,17 @@ class BookDescription extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => Similar()),
+                        MaterialPageRoute(
+                            builder: (context) => const Similar()),
                         (Route<dynamic> route) => false,
                       );
                     },
-                    child: Row(
+                    child: const Row(
                       children: [
                         Text(
                           "See All",
@@ -139,7 +140,7 @@ class BookDescription extends StatelessWidget {
                           width: 5,
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
+                          padding: EdgeInsets.only(right: 8.0),
                           child: Icon(Icons.arrow_forward_ios),
                         ),
                       ],
@@ -148,7 +149,7 @@ class BookDescription extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               SingleChildScrollView(
@@ -156,40 +157,40 @@ class BookDescription extends StatelessWidget {
                 child: Row(
                   children: [
                     _buildContainer(),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     _buildContainer(),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     _buildContainer(),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     _buildContainer(),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     _buildContainer(),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     _buildContainer(),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     _buildContainer(),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Row(
+              const Row(
                 children: [
                   Text(
                     "Reviews",
@@ -202,7 +203,7 @@ class BookDescription extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               _buildReviews(
@@ -212,7 +213,7 @@ class BookDescription extends StatelessWidget {
                       " incididunt ut labore et dolore magna aliqua."
                       "Ut enim ad minim veniam",
                   "${path}book.png"),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               _buildReviews(
@@ -222,15 +223,15 @@ class BookDescription extends StatelessWidget {
                       " incididunt ut labore et dolore magna aliqua."
                       "Ut enim ad minim veniam",
                   "${path}book2.jpeg"),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
 
               _HeadLine("Rate A Review"),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Row(
+              const Row(
                 children: [
                   Text(
                     "* * * * * ",
@@ -243,12 +244,12 @@ class BookDescription extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               _HeadLine("Write A Review"),
 
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Container(
@@ -256,14 +257,14 @@ class BookDescription extends StatelessWidget {
                 //margin: EdgeInsets.all(20),
 
                 decoration: BoxDecoration(
-                  color: Color(0xFFF1EEE9),
+                  color: const Color(0xFFF1EEE9),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.grey, width: 2),
                 ),
                 child: TextFormField(
                   minLines: 1,
                   maxLines: 4,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 10,
                     ),
@@ -276,7 +277,7 @@ class BookDescription extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Container(
@@ -284,8 +285,8 @@ class BookDescription extends StatelessWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(40),
-                    color: Color(0xFF495346)),
-                child: Center(
+                    color: const Color(0xFF495346)),
+                child: const Center(
                     child: Text(
                   "Buy Book",
                   style: TextStyle(
@@ -295,7 +296,7 @@ class BookDescription extends StatelessWidget {
                   ),
                 )),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
             ],
@@ -310,7 +311,7 @@ class BookDescription extends StatelessWidget {
       children: [
         Text(
           text,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
             color: Colors.black,
@@ -324,7 +325,7 @@ class BookDescription extends StatelessWidget {
     return Column(
       //crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        const Row(
           children: [
             Text(
               "Description",
@@ -337,7 +338,7 @@ class BookDescription extends StatelessWidget {
           ],
         ),
         Container(
-          child: Text(
+          child: const Text(
             "Lorem ipsum dolor sit amet, consectetur adipiscing"
             " elit. Nulla sit amet tortor ut risus lobortis interdum"
             " sed vel lorem. Morbi finibus, metus vitae interdum"
@@ -364,7 +365,7 @@ class BookDescription extends StatelessWidget {
             children: [
               Text(
                 text1,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: Colors.black),
@@ -375,7 +376,7 @@ class BookDescription extends StatelessWidget {
             children: [
               Text(
                 text2,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: Colors.black),
@@ -388,7 +389,7 @@ class BookDescription extends StatelessWidget {
   }
 
   VerticalDivider _VerticalDivider() {
-    return VerticalDivider(
+    return const VerticalDivider(
       color: Colors.black,
       thickness: 2,
       indent: 25,
@@ -404,14 +405,14 @@ class BookDescription extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(
             text1,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
           ),
         ]),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(
             text2,
-            style: TextStyle(
+            style: const TextStyle(
                 // fontWeight: FontWeight.bold,
                 fontSize: 20,
                 color: Colors.grey),
@@ -451,7 +452,7 @@ class BookDescription extends StatelessWidget {
                         children: [
                           Text(
                             name,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
                               color: Colors.grey,
@@ -459,10 +460,10 @@ class BookDescription extends StatelessWidget {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
-                      Row(
+                      const Row(
                         children: [Text("********")],
                       ),
                     ],
@@ -470,13 +471,13 @@ class BookDescription extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Container(
               child: Text(
                 text,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   color: Colors.grey,
                 ),
@@ -503,7 +504,7 @@ class BookDescription extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30)),
                 child: Image.asset(
@@ -514,11 +515,11 @@ class BookDescription extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20),
+            const Padding(
+              padding: EdgeInsets.only(left: 20),
               child: Column(
                 children: [
                   Row(
@@ -570,10 +571,10 @@ class BookDescription extends StatelessWidget {
 Widget _buildHashtagChip(String hashtag) {
   return Chip(
     label: Text(hashtag,
-        style: TextStyle(
+        style: const TextStyle(
             // fontWeight: FontWeight.bold
             )),
-    backgroundColor: Color(0xFFF1EEE9),
-    labelStyle: TextStyle(color: Colors.black),
+    backgroundColor: const Color(0xFFF1EEE9),
+    labelStyle: const TextStyle(color: Colors.black),
   );
 }

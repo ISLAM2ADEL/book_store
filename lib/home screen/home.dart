@@ -3,6 +3,7 @@ import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/custom%20bottom%20bar/custom_bottom_bar.dart';
 import 'package:book_store/firebase/firebase%20auth/firebase_form.dart';
+import 'package:book_store/search%20screen/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +32,7 @@ class Home extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              _searchField(),
+              _searchField(height, width),
               const SizedBox(
                 height: 20,
               ),
@@ -552,40 +553,49 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _searchField() {
-    return TextFormField(
-      decoration: InputDecoration(
-        hintText: "Search",
-        hintStyle: const TextStyle(
-          color: Colors.grey,
-          fontSize: 18,
+  Widget _searchField(height, width) {
+    return InkWell(
+      child: Container(
+        height: height * .06,
+        width: width * .9,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border.all(color: Colors.grey.shade400),
+          borderRadius: BorderRadius.circular(30.0),
         ),
-        prefixIcon: const Icon(
-          Icons.search_sharp,
-          color: Colors.grey,
-        ),
-        suffixIcon: Transform.rotate(
-          angle: 90 * (3.1416 / 180), // 90 degrees in radians
-          child: const Icon(
-            CupertinoIcons.slider_horizontal_3,
-            color: Colors.grey,
+        child: Padding(
+          padding: EdgeInsets.only(left: width * .05, right: width * .05),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.search,
+                color: grey,
+              ),
+              SizedBox(
+                width: width * .05,
+              ),
+              const Text(
+                "Search",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 17,
+                ),
+              ),
+              const Spacer(),
+              Transform.rotate(
+                angle: 90 * (3.1416 / 180),
+                child: const Icon(
+                  CupertinoIcons.slider_horizontal_3,
+                  color: Colors.grey,
+                ),
+              )
+            ],
           ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.grey.withOpacity(.35),
-          ),
-          borderRadius: BorderRadius.circular(30.0), //
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.grey.withOpacity(.35),
-          ),
-          borderRadius: BorderRadius.circular(30.0), //
-        ),
-        filled: true,
-        fillColor: white,
       ),
+      onTap: () {
+        Get.to(() => const SearchScreen());
+      },
     );
   }
 

@@ -1,5 +1,7 @@
+import 'package:book_store/home%20screen/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -10,58 +12,65 @@ class SearchScreen extends StatelessWidget {
       backgroundColor: const Color(0xffF1EEE9),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.keyboard_backspace_outlined,
-                    size: 30,
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: _searchBar(),
-                  ),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Row(
+                  children: [
+                    InkWell(
+                      child: const Icon(
+                        Icons.keyboard_backspace_outlined,
+                        size: 30,
+                        color: Colors.grey,
+                      ),
+                      onTap: () {
+                        Get.off(const Home());
+                      },
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: _searchBar(),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  bookWidget(
-                      bookName: 'Book1',
-                      authorName: 'AuthorName',
-                      description: 'Description',
-                      rating: '4.5'),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  bookWidget(
-                      bookName: 'Book2',
-                      authorName: 'AuthorName',
-                      description: 'Description',
-                      rating: '4.5'),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  bookWidget(
-                      bookName: 'Book3',
-                      authorName: 'AuthorName',
-                      description: 'Description',
-                      rating: '4.5'),
-                ],
+              const SizedBox(
+                height: 20,
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    bookWidget(
+                        bookName: 'Book1',
+                        authorName: 'AuthorName',
+                        description: 'Description',
+                        rating: '4.5'),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    bookWidget(
+                        bookName: 'Book2',
+                        authorName: 'AuthorName',
+                        description: 'Description',
+                        rating: '4.5'),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    bookWidget(
+                        bookName: 'Book3',
+                        authorName: 'AuthorName',
+                        description: 'Description',
+                        rating: '4.5'),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -112,7 +121,7 @@ class SearchScreen extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.star_outlined,
                       color: Colors.yellow,
                     ),
