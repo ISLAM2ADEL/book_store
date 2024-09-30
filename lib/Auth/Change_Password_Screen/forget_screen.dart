@@ -1,4 +1,3 @@
-import 'package:book_store/Auth/LogIn_Screen/login_screen.dart';
 import 'package:book_store/home%20screen/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
+import '../LogIn_Screen/login_screen.dart';
 import '../custom widget/custom_text_form.dart';
 import '../forget_screen/Cubit/forget_cubit.dart';
 import '../forget_screen/Cubit/forget_state.dart';
@@ -15,15 +15,20 @@ class ChangePasswordScreen extends StatelessWidget {
 
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController currentPasswordController =
+      TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       emailController.text = user.email ?? '';
     }
+
     return BlocProvider(
       create: (context) => ForgetPasswordCubit(), // Provide the Cubit
       child: Scaffold(
@@ -33,7 +38,7 @@ class ChangePasswordScreen extends StatelessWidget {
           elevation: 0,
           leading: InkWell(
             onTap: () {
-              Get.to(LoginScreen());
+              Get.to(const Home());
             },
             child: const Icon(
               Icons.arrow_back,
@@ -59,7 +64,7 @@ class ChangePasswordScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: height * 0.05),
-                  // Email TextFormField
+                  // Email TextFormField (Pre-filled and disabled)
                   CustomTextForm(
                     hintText: "Enter Your Email",
                     controller: emailController,
@@ -77,15 +82,50 @@ class ChangePasswordScreen extends StatelessWidget {
                       return null;
                     },
                   ),
+                  const SizedBox(height: 20),
+
+                  CustomTextForm(
+                    hintText: "Enter Current Password",
+                    controller: currentPasswordController,
+                    icon: CupertinoIcons.lock,
+                    isEmail: false,
+                    isPassword: true,
+                    // Enable password hiding
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return 'Please enter your current password';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+
+                  CustomTextForm(
+                    hintText: "Enter New Password",
+                    controller: newPasswordController,
+                    icon: CupertinoIcons.lock,
+                    isEmail: false,
+                    isPassword: true,
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return 'Please enter your new password';
+                      }
+                      if (val.length < 6) {
+                        return 'Password must be at least 6 characters long';
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 50),
 
                   BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
                     listener: (context, state) {
                       if (state is ForgetPasswordSuccess) {
-                        Get.snackbar("Reset Password", "Check Your Inbox",
+                        Get.snackbar(
+                            "Password Change", "Password updated successfully",
                             barBlur: 30);
-                        Future.delayed(const Duration(seconds: 3), () {
-                          Get.off(() => const Home());
+                        Future.delayed(const Duration(seconds: 1), () {
+                          Get.off(() => LoginScreen());
                         });
                       } else if (state is ForgetPasswordFailure) {
                         Get.snackbar("Error", state.error, barBlur: 30);
@@ -99,20 +139,36 @@ class ChangePasswordScreen extends StatelessWidget {
                       }
                       return Center(
                         child: InkWell(
-                          onTap: () {
+                          onTap: () async {
                             if (formKey.currentState!.validate()) {
-                              context
-                                  .read<ForgetPasswordCubit>()
-                                  .sendPasswordResetEmail(
-                                    emailController.text,
-                                  );
+                              try {
+                                AuthCredential credential =
+                                    EmailAuthProvider.credential(
+                                  email: emailController.text,
+                                  password: currentPasswordController.text,
+                                );
+
+                                await user
+                                    ?.reauthenticateWithCredential(credential);
+
+                                await user?.updatePassword(
+                                    newPasswordController.text);
+
+                                Get.snackbar(
+                                    "Success", "Password updated successfully",
+                                    barBlur: 30);
+                              } on FirebaseAuthException catch (e) {
+                                Get.snackbar("Error",
+                                    e.message ?? 'Password update failed',
+                                    barBlur: 30);
+                              }
                             }
                           },
                           child: createAccContainer(
                             fontColor: Colors.white,
                             height: height * 0.06,
                             width: width * 0.87,
-                            text: "Reset Password",
+                            text: "Update Password",
                             color: const Color(0xFF3E463B),
                             isBorder: false,
                           ),
@@ -130,33 +186,4 @@ class ChangePasswordScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-Container createAccContainer({
-  required double height,
-  required double width,
-  required String text,
-  required Color? color,
-  required Color? fontColor,
-  required bool isBorder,
-}) {
-  return Container(
-    height: height,
-    width: width,
-    decoration: BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(25),
-      border: isBorder ? Border.all() : null,
-    ),
-    child: Center(
-      child: Text(
-        text,
-        style: TextStyle(
-          color: fontColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 17,
-        ),
-      ),
-    ),
-  );
 }
