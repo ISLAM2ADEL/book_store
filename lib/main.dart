@@ -4,6 +4,8 @@ import 'package:book_store/book%20space%20cubit/admin%20cubit/bottom%20bar/admin
 import 'package:book_store/book%20space%20cubit/awesome%20cubit/awesome_cubit.dart';
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
 import 'package:book_store/book%20space%20cubit/form%20cubit/text_form_cubit.dart';
+import 'package:book_store/book%20space%20cubit/home%20cubit/best%20seller%20cubit/best_cubit.dart';
+import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +67,12 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => ForgetPasswordCubit(),
+        ),
+        BlocProvider(
+          create: (context) => BestCubit(),
+        ),
+        BlocProvider(
+          create: (context) => CategoryCubit(),
         ),
       ],
       child: const GetMaterialApp(

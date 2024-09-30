@@ -1,24 +1,26 @@
 import 'package:bloc/bloc.dart';
+import 'package:book_store/firebase/firebase%20book/firebase_book.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
 part 'home_state.dart';
 
-enum Choice { mostPopular, forYou }
-
-enum Book { bestSeller, latest, comingSoon }
+enum Choice { mostPopular, allBooks }
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
   Choice choice = Choice.mostPopular;
-  Book book = Book.bestSeller;
-
+  FirebaseBook firebaseBook = FirebaseBook();
+  List<QueryDocumentSnapshot> data = [];
   void mostPopular() {
     choice = Choice.mostPopular;
+    getBooksMostPopular();
     emit(HomeMostPopular());
   }
 
   void forYou() {
-    choice = Choice.forYou;
+    choice = Choice.allBooks;
+    getAllBooks();
     emit(HomeForYou());
   }
 
@@ -26,22 +28,28 @@ class HomeCubit extends Cubit<HomeState> {
     return choice;
   }
 
-  void bestSeller() {
-    book = Book.bestSeller;
-    emit(HomeBestSeller());
+  Future<List<QueryDocumentSnapshot>> getAllBooks() async {
+    emit(HomeBooksLoading());
+    try {
+      List<QueryDocumentSnapshot> data = await firebaseBook.getAllBooks();
+      emit(HomeBooksSuccess(data));
+      return data;
+    } catch (e) {
+      emit(HomeBooksFailure(message: e.toString()));
+      return [];
+    }
   }
 
-  void latest() {
-    book = Book.latest;
-    emit(HomeLatest());
-  }
-
-  void comingSoon() {
-    book = Book.comingSoon;
-    emit(HomeComingSoon());
-  }
-
-  Book getBook() {
-    return book;
+  Future<List<QueryDocumentSnapshot>> getBooksMostPopular() async {
+    emit(HomeBooksLoading());
+    try {
+      List<QueryDocumentSnapshot> data =
+          await firebaseBook.getBooksMostPopular();
+      emit(HomeBooksSuccess(data));
+      return data;
+    } catch (e) {
+      emit(HomeBooksFailure(message: e.toString()));
+      return [];
+    }
   }
 }

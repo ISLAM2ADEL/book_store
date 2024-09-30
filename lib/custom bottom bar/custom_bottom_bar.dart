@@ -1,7 +1,10 @@
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
+import 'package:book_store/category%20screen/category.dart';
+import 'package:book_store/home%20screen/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class CustomBottomBar extends StatelessWidget {
   const CustomBottomBar({super.key});
@@ -32,6 +35,7 @@ class CustomBottomBar extends StatelessWidget {
                   ),
                   onTap: () {
                     cubit.home();
+                    Get.off(const Home());
                   },
                 ),
                 InkWell(
@@ -54,6 +58,7 @@ class CustomBottomBar extends StatelessWidget {
                   ),
                   onTap: () {
                     cubit.category();
+                    Get.off(const Category());
                   },
                 ),
                 InkWell(

@@ -1,6 +1,8 @@
 import 'package:book_store/Book_description/similar.dart';
 import 'package:book_store/const.dart';
+import 'package:book_store/home%20screen/home.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class BookDescription extends StatelessWidget {
   const BookDescription({super.key});
@@ -10,9 +12,14 @@ class BookDescription extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF1EEE9),
       appBar: AppBar(
-        leading: const Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
+        leading: InkWell(
+          child: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+          onTap: () {
+            Get.off(const Home());
+          },
         ),
         title: const Padding(
           padding: EdgeInsets.only(left: 80),

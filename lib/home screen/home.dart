@@ -1,13 +1,17 @@
 import 'package:book_store/Book_description/description.dart';
+import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
+import 'package:book_store/book%20space%20cubit/home%20cubit/best%20seller%20cubit/best_cubit.dart';
+import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
+import 'package:book_store/category%20screen/category.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/custom%20bottom%20bar/custom_bottom_bar.dart';
-import 'package:book_store/firebase/firebase%20auth/firebase_form.dart';
 import 'package:book_store/search%20screen/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import '../screens/settings_screen.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -16,7 +20,12 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    final cubit = context.read<HomeCubit>();
+    final homeCubit = context.read<HomeCubit>();
+    final bestCubit = context.read<BestCubit>();
+    final categoryCubit = context.read<CategoryCubit>();
+    homeCubit.getBooksMostPopular();
+    bestCubit.getBooksBestSeller();
+    categoryCubit.getCategories();
     return Scaffold(
       backgroundColor: white,
       body: SingleChildScrollView(
@@ -28,7 +37,7 @@ class Home extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _upperBar(),
+              _upperBar(width),
               const SizedBox(
                 height: 20,
               ),
@@ -39,29 +48,41 @@ class Home extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _textLine(text: "Categories"),
+                  _textLine(text: "Categories", context: context),
                   const SizedBox(
                     height: 20,
                   ),
-                  Wrap(
-                    spacing: 10.0,
-                    runSpacing: 10.0,
-                    children: [
-                      _categoriesName(categoryName: "Education"),
-                      _categoriesName(categoryName: "Fantasy"),
-                      _categoriesName(categoryName: "Fiction"),
-                      _categoriesName(categoryName: "Novels"),
-                      _categoriesName(categoryName: "Adventure"),
-                      _categoriesName(categoryName: "Romance"),
-                      _categoriesName(categoryName: "Science Fiction"),
-                    ],
+                  BlocBuilder<CategoryCubit, CategoryState>(
+                    builder: (context, state) {
+                      if (state is CategoryLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (state is CategorySuccess) {
+                        final categories = state.data;
+                        return Wrap(
+                          spacing: 10.0,
+                          runSpacing: 10.0,
+                          children: [
+                            _categoriesName(categoryName: categories[0]),
+                            _categoriesName(categoryName: categories[1]),
+                            _categoriesName(categoryName: categories[2]),
+                            _categoriesName(categoryName: categories[3]),
+                            _categoriesName(categoryName: categories[4]),
+                            _categoriesName(categoryName: categories[5]),
+                          ],
+                        );
+                      }
+                      return const GetSnackBar();
+                    },
                   ),
                 ],
               ),
               const SizedBox(
                 height: 20,
               ),
-              _textLine(text: "Recent Books"),
+              _textLine(text: "Recent Books", context: context),
               const SizedBox(
                 height: 20,
               ),
@@ -111,7 +132,7 @@ class Home extends StatelessWidget {
                 width: double.infinity,
                 child: BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
-                    Choice myChoice = cubit.getChoice();
+                    Choice myChoice = homeCubit.getChoice();
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -129,7 +150,7 @@ class Home extends StatelessWidget {
                                 myChoice == Choice.mostPopular ? false : true,
                           ),
                           onTap: () {
-                            cubit.mostPopular();
+                            homeCubit.mostPopular();
                           },
                         ),
                         const SizedBox(
@@ -137,17 +158,17 @@ class Home extends StatelessWidget {
                         ),
                         InkWell(
                           child: _bookType(
-                            text: "For You",
-                            containerColor: myChoice == Choice.forYou
+                            text: "All Books",
+                            containerColor: myChoice == Choice.allBooks
                                 ? darkGreen
                                 : Colors.transparent,
-                            textColor: myChoice == Choice.forYou
+                            textColor: myChoice == Choice.allBooks
                                 ? Colors.white
                                 : darkGreen,
-                            border: myChoice == Choice.forYou ? false : true,
+                            border: myChoice == Choice.allBooks ? false : true,
                           ),
                           onTap: () {
-                            cubit.forYou();
+                            homeCubit.forYou();
                           },
                         ),
                       ],
@@ -158,34 +179,47 @@ class Home extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                height: 240,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 15,
-                  itemBuilder: (context, index) => InkWell(
-                    child: _bookBuild(
-                        bookImage: "hunger.png",
-                        bookName: "The Hunger",
-                        bookAuthor: "Patrick Mauriee",
-                        bookRate: "4.5"),
-                    onTap: () {
-                      Get.to(const BookDescription());
-                    },
-                  ),
-                  separatorBuilder: (context, index) => const SizedBox(
-                    width: 8,
-                  ),
-                ),
+              BlocBuilder<HomeCubit, HomeState>(
+                builder: (context, state) {
+                  if (state is HomeBooksLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is HomeBooksSuccess) {
+                    final books = state.data;
+                    return SizedBox(
+                      height: 240,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: books.length,
+                        itemBuilder: (context, index) => InkWell(
+                          child: _bookBuild(
+                              bookImage: books[index]["imageUrl"],
+                              bookName: books[index]["name"],
+                              bookAuthor: books[index]["author"],
+                              bookRate: books[index]["rate"]),
+                          onTap: () {
+                            Get.to(const BookDescription());
+                          },
+                        ),
+                        separatorBuilder: (context, index) => const SizedBox(
+                          width: 8,
+                        ),
+                      ),
+                    );
+                  }
+                  return const CircularProgressIndicator();
+                },
               ),
               const SizedBox(
                 height: 20,
               ),
               SizedBox(
                 width: double.infinity,
-                child: BlocBuilder<HomeCubit, HomeState>(
+                child: BlocBuilder<BestCubit, BestState>(
                   builder: (context, state) {
-                    Book myBook = cubit.getBook();
+                    Book myBook = bestCubit.getBook();
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -202,7 +236,7 @@ class Home extends StatelessWidget {
                             border: myBook == Book.bestSeller ? false : true,
                           ),
                           onTap: () {
-                            cubit.bestSeller();
+                            bestCubit.bestSeller();
                           },
                         ),
                         const SizedBox(
@@ -210,17 +244,17 @@ class Home extends StatelessWidget {
                         ),
                         InkWell(
                           child: _bookType(
-                            text: "Latest",
-                            containerColor: myBook == Book.latest
+                            text: "Alphabetic",
+                            containerColor: myBook == Book.alphabetic
                                 ? darkGreen
                                 : Colors.transparent,
-                            textColor: myBook == Book.latest
+                            textColor: myBook == Book.alphabetic
                                 ? Colors.white
                                 : darkGreen,
-                            border: myBook == Book.latest ? false : true,
+                            border: myBook == Book.alphabetic ? false : true,
                           ),
                           onTap: () {
-                            cubit.latest();
+                            bestCubit.alphabetic();
                           },
                         ),
                         const SizedBox(
@@ -228,17 +262,16 @@ class Home extends StatelessWidget {
                         ),
                         InkWell(
                           child: _bookType(
-                            text: "Coming Soon",
-                            containerColor: myBook == Book.comingSoon
+                            text: "Free",
+                            containerColor: myBook == Book.free
                                 ? darkGreen
                                 : Colors.transparent,
-                            textColor: myBook == Book.comingSoon
-                                ? Colors.white
-                                : darkGreen,
-                            border: myBook == Book.comingSoon ? false : true,
+                            textColor:
+                                myBook == Book.free ? Colors.white : darkGreen,
+                            border: myBook == Book.free ? false : true,
                           ),
                           onTap: () {
-                            cubit.comingSoon();
+                            bestCubit.freeBooks();
                           },
                         ),
                       ],
@@ -249,27 +282,44 @@ class Home extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                height: 240,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 15,
-                  itemBuilder: (context, index) => _bookBuild(
-                    bookImage: "hunger.png",
-                    bookName: "The Hunger",
-                    bookAuthor: "Patrick Mauriee",
-                    bookRate: "22",
-                    isPrice: true,
-                  ),
-                  separatorBuilder: (context, index) => const SizedBox(
-                    width: 8,
-                  ),
-                ),
+              BlocBuilder<BestCubit, BestState>(
+                builder: (context, state) {
+                  if (state is BestLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is BestSuccess) {
+                    final books = state.data;
+                    return SizedBox(
+                      height: 240,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: books.length,
+                        itemBuilder: (context, index) => InkWell(
+                          child: _bookBuild(
+                              bookImage: books[index]["imageUrl"],
+                              bookName: books[index]["name"],
+                              bookAuthor: books[index]["author"],
+                              bookRate: books[index]["price"],
+                              isPrice: true),
+                          onTap: () {
+                            Get.to(const BookDescription());
+                          },
+                        ),
+                        separatorBuilder: (context, index) => const SizedBox(
+                          width: 8,
+                        ),
+                      ),
+                    );
+                  }
+                  return const CircularProgressIndicator();
+                },
               ),
               const SizedBox(
                 height: 20,
               ),
-              _textLine(text: "Explore Authors"),
+              _textLine(text: "Explore Authors", context: context),
               const SizedBox(
                 height: 20,
               ),
@@ -351,8 +401,8 @@ class Home extends StatelessWidget {
             child: SizedBox(
               height: 130,
               width: 200,
-              child: Image.asset(
-                "$path$bookImage",
+              child: Image.network(
+                bookImage,
                 fit: BoxFit.fitWidth,
               ),
             ),
@@ -365,6 +415,8 @@ class Home extends StatelessWidget {
                 Text(
                   bookName,
                   style: const TextStyle(
+                    overflow:
+                        TextOverflow.ellipsis, // Add ellipsis for overflow
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -520,7 +572,9 @@ class Home extends StatelessWidget {
 
   Widget _textLine({
     required String text,
+    required BuildContext context,
   }) {
+    final homecubit = context.read<BottomCubit>();
     return Row(
       children: [
         Text(
@@ -532,22 +586,30 @@ class Home extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        const Row(
-          children: [
-            Text(
-              "See All",
-              style: TextStyle(
-                color: darkGreen,
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
+        InkWell(
+          child: const Row(
+            children: [
+              Text(
+                "See All",
+                style: TextStyle(
+                  color: darkGreen,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            Icon(
-              Icons.chevron_right,
-              size: 25,
-              color: darkGreen,
-            )
-          ],
+              Icon(
+                Icons.chevron_right,
+                size: 25,
+                color: darkGreen,
+              )
+            ],
+          ),
+          onTap: () {
+            if (text == "Categories") {
+              homecubit.category();
+              Get.off(const Category());
+            }
+          },
         )
       ],
     );
@@ -599,24 +661,29 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _upperBar() {
-    FirebaseForm firebaseForm = FirebaseForm();
+  Widget _upperBar(width) {
     return Row(
       children: [
-        const CircleAvatar(
-          radius: 22,
-          backgroundImage: AssetImage("${path}user image.png"),
+        InkWell(
+          child: const CircleAvatar(
+            radius: 22,
+            backgroundImage: AssetImage("${path}user image.png"),
+          ),
+          onTap: () {
+            Get.off(const SettingsScreen());
+          },
         ),
-        const SizedBox(
-          width: 17,
+        SizedBox(
+          width: width * .20,
         ),
         const Text(
-          "Hi, Aya!",
+          "Book Space",
           style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
+            color: Color(0xFF3E463B),
+            fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
+          textAlign: TextAlign.center,
         ),
         const Spacer(),
         InkWell(
@@ -624,9 +691,7 @@ class Home extends StatelessWidget {
             Icons.dark_mode_outlined,
             size: 28,
           ),
-          onTap: () {
-            firebaseForm.signOutUser();
-          },
+          onTap: () {},
         ),
       ],
     );

@@ -85,11 +85,26 @@ class FirebaseForm {
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
+      } else if (e.code == 'invalid-email' ||
+          e.code == 'malformed-credential') {
+        Get.snackbar(
+          "Error",
+          "Invalid email or malformed credential provided.",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar(
+          "Error",
+          "Wrong E-mail or Password please check credentials",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
     } catch (e) {
       Get.snackbar(
         "Error",
-        e.toString(),
+        "e.toString()",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -120,8 +135,14 @@ class FirebaseForm {
     );
 
     // Once signed in, return the UserCredential
-    await FirebaseAuth.instance.signInWithCredential(credential);
-    Get.offAll(const Home());
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    String? userEmail = userCredential.user?.email;
+    if (userEmail == adminEmail) {
+      Get.offAll(() => AddBook());
+    } else {
+      Get.offAll(() => const Home());
+    }
   }
 
   Future<void> forgetPassword(String email) async {

@@ -59,4 +59,55 @@ class FirebaseBook {
   void resetImage() {
     selectedImageFile = null;
   }
+
+  Future<List<QueryDocumentSnapshot>> getAllBooks() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('books').get();
+    return querySnapshot.docs;
+  }
+
+  Future<List<QueryDocumentSnapshot>> getBooksBestSeller() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .where('price', isLessThanOrEqualTo: '14.99')
+        .get();
+    return querySnapshot.docs;
+  }
+
+  Future<List<QueryDocumentSnapshot>> getBooksMostPopular() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .where('rate', isGreaterThanOrEqualTo: '4.6')
+        .orderBy('rate', descending: true)
+        .get();
+    return querySnapshot.docs;
+  }
+
+  Future<List<QueryDocumentSnapshot>> getAlphabeticBooks() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .orderBy('name')
+        .get();
+    return querySnapshot.docs;
+  }
+
+  Future<List<QueryDocumentSnapshot>> getFreeBooks() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .where('price', isEqualTo: 'Free')
+        .get();
+    return querySnapshot.docs;
+  }
+
+  Future<List> getCategories() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('books').get();
+    Set<String> categories = {};
+    for (var doc in querySnapshot.docs) {
+      String category = doc[
+          'category']; // Replace with the field name containing the category
+      categories.add(category);
+    }
+    return categories.toList();
+  }
 }
