@@ -110,4 +110,24 @@ class FirebaseBook {
     }
     return categories.toList();
   }
+
+  Future<List<QueryDocumentSnapshot>> getCategoryBook(String name) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .where('category', isEqualTo: name)
+        .get();
+    return querySnapshot.docs;
+  }
+
+  Future<List> getAuthors() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('books').get();
+    Set<String> categories = {};
+    for (var doc in querySnapshot.docs) {
+      String category =
+          doc['author']; // Replace with the field name containing the category
+      categories.add(category);
+    }
+    return categories.toList();
+  }
 }

@@ -6,7 +6,7 @@ import '../const.dart';
 import 'package:book_store/cubit/password_cubit_cubit.dart'; // Import your cubit file
 
 class UpdatePass extends StatelessWidget {
-  const UpdatePass({Key? key}) : super(key: key);
+  const UpdatePass({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +22,11 @@ class UpdatePass extends StatelessWidget {
               child: Column(
                 children: [
                   _passField(context, "Old Password", 0),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                   _passField(context, "New Password", 1),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                   _passField(context, "Repeat Password", 2),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   _updateButton(context),
                 ],
               ),
@@ -44,7 +44,7 @@ class UpdatePass extends StatelessWidget {
         onTap: () => Navigator.pop(context),
         child: const Icon(Icons.arrow_back_ios),
       ),
-      title: Text(
+      title: const Text(
         "Change Password",
         style: TextStyle(
             color: fontColor, fontSize: 20, fontWeight: FontWeight.bold),
@@ -59,7 +59,7 @@ class UpdatePass extends StatelessWidget {
           obscureText: obscurePassword[index],
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(color: Color(0xFF8D8D8D)),
+            hintStyle: const TextStyle(color: Color(0xFF8D8D8D)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30),
               borderSide: BorderSide(color: Colors.grey.shade300),
@@ -68,7 +68,7 @@ class UpdatePass extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
               borderSide: BorderSide(color: Colors.grey.shade600),
             ),
-            prefixIcon: Icon(
+            prefixIcon: const Icon(
               CupertinoIcons.lock,
               color: Color(0xFF8D8D8D),
             ),
@@ -77,7 +77,7 @@ class UpdatePass extends StatelessWidget {
                 obscurePassword[index]
                     ? Icons.visibility
                     : Icons.visibility_off,
-                color: Color(0xFF8D8D8D),
+                color: const Color(0xFF8D8D8D),
               ),
               onPressed: () {
                 context.read<PasswordCubit>().togglePasswordVisibility(index);
@@ -110,7 +110,7 @@ class UpdatePass extends StatelessWidget {
             borderRadius: BorderRadius.circular(25),
             border: null,
           ),
-          child: Center(
+          child: const Center(
             child: Text(
               "Update",
               style: TextStyle(

@@ -13,6 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'book space cubit/admin cubit/add book/image_cubit.dart';
+import 'book space cubit/authors cubit/author_cubit.dart';
+import 'book space cubit/favourite cubit/favourite_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,6 +75,12 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => CategoryCubit(),
+        ),
+        BlocProvider(
+          create: (context) => FavouriteCubit(),
+        ),
+        BlocProvider(
+          create: (context) => AuthorCubit(),
         ),
       ],
       child: const GetMaterialApp(

@@ -84,7 +84,7 @@ class EditProfileScreen extends StatelessWidget {
           },
           child: CircleAvatar(
             backgroundImage: (file == null)
-                ? AssetImage("${path}default_profile.png")
+                ? const AssetImage("${path}default_profile.png")
                 : FileImage(file) as ImageProvider,
             radius: 70,
             backgroundColor: Colors.grey,
@@ -123,7 +123,7 @@ class EditProfileScreen extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         filled: true,
         fillColor: Colors.grey[100],
         contentPadding:

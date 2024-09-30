@@ -1,16 +1,19 @@
 import 'package:book_store/Book_description/description.dart';
+import 'package:book_store/book%20space%20cubit/authors%20cubit/author_cubit.dart';
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/best%20seller%20cubit/best_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
-import 'package:book_store/category%20screen/category.dart';
+import 'package:book_store/category%20screen/book_category.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/custom%20bottom%20bar/custom_bottom_bar.dart';
+import 'package:book_store/home%20screen/custom%20text%20widget/custom_text.dart';
 import 'package:book_store/search%20screen/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import '../book space cubit/favourite cubit/favourite_cubit.dart';
 import '../screens/settings_screen.dart';
 
 class Home extends StatelessWidget {
@@ -21,11 +24,14 @@ class Home extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final homeCubit = context.read<HomeCubit>();
+    final authorCubit = context.read<AuthorCubit>();
+    final bottomCubit = context.read<BottomCubit>();
     final bestCubit = context.read<BestCubit>();
     final categoryCubit = context.read<CategoryCubit>();
     homeCubit.getBooksMostPopular();
     bestCubit.getBooksBestSeller();
     categoryCubit.getCategories();
+    authorCubit.getAuthors();
     return Scaffold(
       backgroundColor: white,
       body: SingleChildScrollView(
@@ -48,7 +54,7 @@ class Home extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _textLine(text: "Categories", context: context),
+                  const CustomText(text: "Categories"),
                   const SizedBox(
                     height: 20,
                   ),
@@ -64,17 +70,22 @@ class Home extends StatelessWidget {
                         return Wrap(
                           spacing: 10.0,
                           runSpacing: 10.0,
-                          children: [
-                            _categoriesName(categoryName: categories[0]),
-                            _categoriesName(categoryName: categories[1]),
-                            _categoriesName(categoryName: categories[2]),
-                            _categoriesName(categoryName: categories[3]),
-                            _categoriesName(categoryName: categories[4]),
-                            _categoriesName(categoryName: categories[5]),
-                          ],
+                          children: List.generate(6, (index) {
+                            return InkWell(
+                              child: _categoriesName(
+                                categoryName: categories[index],
+                              ),
+                              onTap: () {
+                                bottomCubit.category();
+                                Get.off(() => BookCategory(
+                                      category: categories[index],
+                                    ));
+                              },
+                            );
+                          }),
                         );
                       }
-                      return const GetSnackBar();
+                      return const Text("");
                     },
                   ),
                 ],
@@ -82,7 +93,7 @@ class Home extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              _textLine(text: "Recent Books", context: context),
+              const CustomText(text: "Recent Books"),
               const SizedBox(
                 height: 20,
               ),
@@ -195,10 +206,12 @@ class Home extends StatelessWidget {
                         itemCount: books.length,
                         itemBuilder: (context, index) => InkWell(
                           child: _bookBuild(
-                              bookImage: books[index]["imageUrl"],
-                              bookName: books[index]["name"],
-                              bookAuthor: books[index]["author"],
-                              bookRate: books[index]["rate"]),
+                            bookImage: books[index]["imageUrl"],
+                            bookName: books[index]["name"],
+                            bookAuthor: books[index]["author"],
+                            bookRate: books[index]["rate"],
+                            context: context,
+                          ),
                           onTap: () {
                             Get.to(const BookDescription());
                           },
@@ -298,11 +311,13 @@ class Home extends StatelessWidget {
                         itemCount: books.length,
                         itemBuilder: (context, index) => InkWell(
                           child: _bookBuild(
-                              bookImage: books[index]["imageUrl"],
-                              bookName: books[index]["name"],
-                              bookAuthor: books[index]["author"],
-                              bookRate: books[index]["price"],
-                              isPrice: true),
+                            bookImage: books[index]["imageUrl"],
+                            bookName: books[index]["name"],
+                            bookAuthor: books[index]["author"],
+                            bookRate: books[index]["price"],
+                            isPrice: true,
+                            context: context,
+                          ),
                           onTap: () {
                             Get.to(const BookDescription());
                           },
@@ -319,23 +334,39 @@ class Home extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              _textLine(text: "Explore Authors", context: context),
+              const CustomText(
+                text: "Explore Authors",
+                expanded: true,
+              ),
               const SizedBox(
                 height: 20,
               ),
               SizedBox(
                 height: 130,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 15,
-                  itemBuilder: (context, index) => _authorBuild(),
-                  separatorBuilder: (context, index) => const SizedBox(
-                    width: 10,
-                  ),
+                child: BlocBuilder<AuthorCubit, AuthorState>(
+                  builder: (context, state) {
+                    if (state is AuthorLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (state is AuthorSuccess) {
+                      bool expand = authorCubit.getExpand();
+                      final authors = state.data;
+                      return ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: expand ? authors.length : 10,
+                        itemBuilder: (context, index) => _authorBuild(
+                          authorName: authors[index],
+                        ),
+                        separatorBuilder: (context, index) => const SizedBox(
+                          width: 10,
+                        ),
+                      );
+                    }
+                    return const Text("");
+                  },
                 ),
-              ),
-              const SizedBox(
-                height: 20,
               ),
             ],
           ),
@@ -345,26 +376,31 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _authorBuild() {
-    return const Column(
+  Widget _authorBuild({
+    required String authorName,
+  }) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Stack(
+        const Stack(
           alignment: AlignmentDirectional.center,
           children: [
             CircleAvatar(
-              radius: 54,
+              radius: 35,
               backgroundColor: Colors.black,
             ),
             CircleAvatar(
-              radius: 50,
+              radius: 32,
               backgroundImage: AssetImage("${path}author.png"),
             ),
           ],
         ),
+        const SizedBox(
+          height: 10,
+        ),
         Text(
-          "Dana Thomas",
-          style: TextStyle(
+          authorName,
+          style: const TextStyle(
             color: Colors.grey,
           ),
         )
@@ -378,7 +414,9 @@ class Home extends StatelessWidget {
     required String bookAuthor,
     required String bookRate,
     bool isPrice = false,
+    required BuildContext context,
   }) {
+    final favouriteCubit = context.read<FavouriteCubit>();
     return Container(
       height: 240,
       width: 200,
@@ -432,34 +470,55 @@ class Home extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                isPrice
-                    ? Text(
-                        "\$ $bookRate",
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      )
-                    : Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.yellow,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            bookRate,
+                Row(
+                  children: [
+                    isPrice
+                        ? Text(
+                            "\$ $bookRate",
                             style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                             ),
+                          )
+                        : Row(
+                            children: [
+                              const Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                bookRate,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                    const Spacer(),
+                    BlocBuilder<FavouriteCubit, FavouriteState>(
+                      builder: (context, state) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: InkWell(
+                            child: const Icon(
+                              CupertinoIcons.heart,
+                              color: Colors.red,
+                            ),
+                            onTap: () {
+                              favouriteCubit.setFavourite(bookName);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                )
               ],
             ),
           ),
@@ -570,51 +629,6 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _textLine({
-    required String text,
-    required BuildContext context,
-  }) {
-    final homecubit = context.read<BottomCubit>();
-    return Row(
-      children: [
-        Text(
-          text,
-          style: const TextStyle(
-            color: darkGreen,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const Spacer(),
-        InkWell(
-          child: const Row(
-            children: [
-              Text(
-                "See All",
-                style: TextStyle(
-                  color: darkGreen,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Icon(
-                Icons.chevron_right,
-                size: 25,
-                color: darkGreen,
-              )
-            ],
-          ),
-          onTap: () {
-            if (text == "Categories") {
-              homecubit.category();
-              Get.off(const Category());
-            }
-          },
-        )
-      ],
-    );
-  }
-
   Widget _searchField(height, width) {
     return InkWell(
       child: Container(
@@ -669,9 +683,7 @@ class Home extends StatelessWidget {
             radius: 22,
             backgroundImage: AssetImage("${path}user image.png"),
           ),
-          onTap: () {
-            Get.off(const SettingsScreen());
-          },
+          onTap: () {},
         ),
         SizedBox(
           width: width * .20,
@@ -688,10 +700,12 @@ class Home extends StatelessWidget {
         const Spacer(),
         InkWell(
           child: const Icon(
-            Icons.dark_mode_outlined,
+            Icons.settings,
             size: 28,
           ),
-          onTap: () {},
+          onTap: () {
+            Get.off(() => const SettingsScreen());
+          },
         ),
       ],
     );

@@ -1,3 +1,4 @@
+import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/custom%20bottom%20bar/custom_bottom_bar.dart';
@@ -5,6 +6,8 @@ import 'package:book_store/home%20screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+
+import 'book_category.dart';
 
 class Category extends StatelessWidget {
   const Category({super.key});
@@ -15,7 +18,7 @@ class Category extends StatelessWidget {
     categoryCubit.getCategories();
     return Scaffold(
       backgroundColor: white,
-      appBar: _categoryAppBar(),
+      appBar: _categoryAppBar(context: context),
       bottomNavigationBar: const CustomBottomBar(),
       body: SingleChildScrollView(
         child: Padding(
@@ -29,12 +32,19 @@ class Category extends StatelessWidget {
               }
               if (state is CategorySuccess) {
                 final categories = state.data;
-                print(categories.length);
                 return Wrap(
                   spacing: 10.0,
                   runSpacing: 10.0,
                   children: List.generate(29, (index) {
-                    return _categoriesName(categoryName: categories[index]);
+                    return InkWell(
+                      child: _categoriesName(categoryName: categories[index]),
+                      onTap: () {
+                        categoryCubit.getBooks(categories[index]);
+                        Get.off(() => BookCategory(
+                              category: categories[index],
+                            ));
+                      },
+                    );
                   }),
                 );
               }
@@ -46,7 +56,10 @@ class Category extends StatelessWidget {
     );
   }
 
-  AppBar _categoryAppBar() {
+  AppBar _categoryAppBar({
+    required BuildContext context,
+  }) {
+    final cubit = context.read<BottomCubit>();
     return AppBar(
       backgroundColor: white,
       leading: InkWell(
@@ -56,6 +69,7 @@ class Category extends StatelessWidget {
           size: 26,
         ),
         onTap: () {
+          cubit.home();
           Get.off(const Home());
         },
       ),

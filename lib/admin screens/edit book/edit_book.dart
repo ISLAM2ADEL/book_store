@@ -137,7 +137,7 @@ class EditBook extends StatelessWidget {
                       ),
                       Spacer(),
                       Text(
-                        "55\$",
+                        "\$ 55",
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,

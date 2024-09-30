@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/cubit/settings_cubit.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../firebase/firebase auth/firebase_form.dart';
 import '../home screen/home.dart';
@@ -43,10 +42,10 @@ class SettingsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: BlocBuilder<SettingsCubit, SettingsState>(
             builder: (context, state) {
-              File? _imgFile;
+              File? imgFile;
 
               if (state is SettingsImagePicked) {
-                _imgFile = state.imageFile;
+                imgFile = state.imageFile;
               }
 
               return SingleChildScrollView(
@@ -61,9 +60,10 @@ class SettingsScreen extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => EditProfileScreen()));
+                                    builder: (context) =>
+                                        const EditProfileScreen()));
                           },
-                          child: _profileBar(_imgFile)),
+                          child: _profileBar(imgFile)),
                     ),
                     _buildModelsSection(context),
                     _buildSettingsSection(context, firebaseForm),
@@ -84,7 +84,7 @@ class SettingsScreen extends StatelessWidget {
         children: [
           CircleAvatar(
             backgroundImage: (file == null)
-                ? AssetImage("${path}Frame_65.png")
+                ? const AssetImage("${path}Frame_65.png")
                 : FileImage(file) as ImageProvider,
             radius: 23,
           ),
@@ -113,7 +113,7 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _buildModelsSection(dynamic context) {
     final height = MediaQuery.of(context).size.height;
-    return Container(
+    return SizedBox(
       height: height * .2, // Set a fixed height for models
       child: Column(
         children: [
@@ -223,8 +223,8 @@ class SettingsScreen extends StatelessWidget {
           "Change Password",
           image: "${path}solar_password-line-duotone.png",
           onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => UpdatePass()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const UpdatePass()));
           },
         ),
         _buildDivider(),

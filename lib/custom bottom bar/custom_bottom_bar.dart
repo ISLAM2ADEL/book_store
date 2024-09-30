@@ -15,7 +15,7 @@ class CustomBottomBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Container(
-        height: 80,
+        height: 70,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(30.0),
@@ -35,7 +35,7 @@ class CustomBottomBar extends StatelessWidget {
                   ),
                   onTap: () {
                     cubit.home();
-                    Get.off(const Home());
+                    Get.off(() => const Home());
                   },
                 ),
                 InkWell(
@@ -58,7 +58,7 @@ class CustomBottomBar extends StatelessWidget {
                   ),
                   onTap: () {
                     cubit.category();
-                    Get.off(const Category());
+                    Get.off(() => const Category());
                   },
                 ),
                 InkWell(
@@ -91,7 +91,7 @@ class CustomBottomBar extends StatelessWidget {
         Icon(
           icons,
           color: bottomColor,
-          size: 42,
+          size: 35,
         ),
         Text(
           text,
