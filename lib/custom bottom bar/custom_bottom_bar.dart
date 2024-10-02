@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
+import '../favourite screen/favorite.dart';
+
 class CustomBottomBar extends StatelessWidget {
   const CustomBottomBar({super.key});
 
@@ -46,6 +48,7 @@ class CustomBottomBar extends StatelessWidget {
                         myChoice == Bar.favourite ? Colors.black : Colors.grey,
                   ),
                   onTap: () {
+                    Get.off(() => const Favorite());
                     cubit.favourite();
                   },
                 ),

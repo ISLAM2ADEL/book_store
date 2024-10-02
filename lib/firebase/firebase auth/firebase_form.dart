@@ -119,7 +119,6 @@ class FirebaseForm {
   }
 
   Future signInWithGoogle() async {
-    // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) {
       return;

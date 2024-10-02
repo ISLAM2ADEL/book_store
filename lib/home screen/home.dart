@@ -1,6 +1,7 @@
 import 'package:book_store/Book_description/description.dart';
 import 'package:book_store/book%20space%20cubit/authors%20cubit/author_cubit.dart';
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
+import 'package:book_store/book%20space%20cubit/favourite%20cubit/favourite_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/best%20seller%20cubit/best_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
@@ -9,11 +10,11 @@ import 'package:book_store/const.dart';
 import 'package:book_store/custom%20bottom%20bar/custom_bottom_bar.dart';
 import 'package:book_store/home%20screen/custom%20text%20widget/custom_text.dart';
 import 'package:book_store/search%20screen/search_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import '../book space cubit/favourite cubit/favourite_cubit.dart';
 import '../screens/settings_screen.dart';
 
 class Home extends StatelessWidget {
@@ -28,10 +29,13 @@ class Home extends StatelessWidget {
     final bottomCubit = context.read<BottomCubit>();
     final bestCubit = context.read<BestCubit>();
     final categoryCubit = context.read<CategoryCubit>();
+    final favouriteCubit = context.read<FavouriteCubit>();
     homeCubit.getBooksMostPopular();
     bestCubit.getBooksBestSeller();
     categoryCubit.getCategories();
     authorCubit.getAuthors();
+    final userEmail = FirebaseAuth.instance.currentUser?.email;
+    favouriteCubit.getFavBooks(userEmail!);
     return Scaffold(
       backgroundColor: white,
       body: SingleChildScrollView(
@@ -213,7 +217,9 @@ class Home extends StatelessWidget {
                             context: context,
                           ),
                           onTap: () {
-                            Get.to(const BookDescription());
+                            Get.to(BookDescription(
+                              bookName: books[index]["name"],
+                            ));
                           },
                         ),
                         separatorBuilder: (context, index) => const SizedBox(
@@ -319,7 +325,8 @@ class Home extends StatelessWidget {
                             context: context,
                           ),
                           onTap: () {
-                            Get.to(const BookDescription());
+                            Get.to(BookDescription(
+                                bookName: books[index]["name"]));
                           },
                         ),
                         separatorBuilder: (context, index) => const SizedBox(
@@ -414,9 +421,11 @@ class Home extends StatelessWidget {
     required String bookAuthor,
     required String bookRate,
     bool isPrice = false,
+    bool isFavourite = false,
     required BuildContext context,
   }) {
     final favouriteCubit = context.read<FavouriteCubit>();
+
     return Container(
       height: 240,
       width: 200,
@@ -503,15 +512,28 @@ class Home extends StatelessWidget {
                     const Spacer(),
                     BlocBuilder<FavouriteCubit, FavouriteState>(
                       builder: (context, state) {
+                        if (state is FavouriteSuccess) {
+                          final book = state.data;
+                          for (int i = 0; i < state.data.length; i++) {
+                            if (bookName == book[i]['name']) {
+                              isFavourite = true;
+                            }
+                          }
+                        }
                         return Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: InkWell(
-                            child: const Icon(
-                              CupertinoIcons.heart,
+                            child: Icon(
+                              isFavourite
+                                  ? CupertinoIcons.heart_fill
+                                  : CupertinoIcons.heart,
                               color: Colors.red,
                             ),
                             onTap: () {
-                              favouriteCubit.setFavourite(bookName);
+                              favouriteCubit.setFavorite(bookName, context);
+                              Future.delayed(const Duration(seconds: 1), () {
+                                Get.offAll(const Home());
+                              });
                             },
                           ),
                         );

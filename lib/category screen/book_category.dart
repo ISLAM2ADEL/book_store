@@ -41,7 +41,8 @@ class BookCategory extends StatelessWidget {
                       bookRate: books[index]['rate'],
                       imageUrl: books[index]['imageUrl']),
                   onTap: () {
-                    Get.off(() => const BookDescription());
+                    Get.off(
+                        () => BookDescription(bookName: books[index]['name']));
                   },
                 ),
                 separatorBuilder: (context, index) => const SizedBox(
@@ -49,7 +50,7 @@ class BookCategory extends StatelessWidget {
                 ),
               );
             }
-            return const Text("fafelamd");
+            return const Text("");
           },
         ),
       )),

@@ -3,6 +3,7 @@ import 'package:book_store/Auth/splash_screen.dart';
 import 'package:book_store/book%20space%20cubit/admin%20cubit/bottom%20bar/admin_bar_cubit.dart';
 import 'package:book_store/book%20space%20cubit/awesome%20cubit/awesome_cubit.dart';
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
+import 'package:book_store/book%20space%20cubit/description%20Cubit/description_cubit.dart';
 import 'package:book_store/book%20space%20cubit/form%20cubit/text_form_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/best%20seller%20cubit/best_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
@@ -81,6 +82,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => AuthorCubit(),
+        ),
+        BlocProvider(
+          create: (context) => DescriptionCubit(),
         ),
       ],
       child: const GetMaterialApp(

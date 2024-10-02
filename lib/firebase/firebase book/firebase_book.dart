@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -129,5 +130,94 @@ class FirebaseBook {
       categories.add(category);
     }
     return categories.toList();
+  }
+
+  Future<List<QueryDocumentSnapshot>> getBookDescription(String name) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .where('name', isEqualTo: name)
+        .get();
+    return querySnapshot.docs;
+  }
+
+  Future<void> addUserFavorites(String newFavoriteBook) async {
+    String? userEmail = FirebaseAuth.instance.currentUser?.email;
+
+    if (userEmail == null) {
+      print('User email is null. Cannot add favorites.');
+      return;
+    }
+
+    CollectionReference userFavorites =
+        FirebaseFirestore.instance.collection('user_favorites');
+
+    DocumentReference userDoc = userFavorites.doc(userEmail);
+
+    DocumentSnapshot docSnapshot = await userDoc.get();
+
+    List<String> favoriteBooks = [];
+    if (docSnapshot.exists && docSnapshot.data() != null) {
+      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+      if (data.containsKey('favorites')) {
+        favoriteBooks = List<String>.from(data['favorites']);
+      }
+    }
+    if (!favoriteBooks.contains(newFavoriteBook)) {
+      favoriteBooks.add(newFavoriteBook); // Add the new book
+    }
+    await userDoc.set({
+      'favorites': favoriteBooks,
+    }, SetOptions(merge: true));
+  }
+
+  // Fetches the favorite books for the given user email
+  Future<List<String>> getFavoriteBooks(String userEmail) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('user_favorites')
+        .doc(userEmail)
+        .get();
+
+    if (snapshot.exists) {
+      List<dynamic> favorites = snapshot.data()?['favorites'];
+      return favorites.cast<String>();
+    } else {
+      throw Exception('No favorites found for this user.');
+    }
+  }
+
+// Fetches details of a specific book by name
+  Future<Map<String, dynamic>> getBookDetails(String bookName) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .where('name', isEqualTo: bookName)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      return querySnapshot.docs.first.data();
+    } else {
+      throw Exception('Book not found');
+    }
+  }
+
+// Fetches details of the favorite books for the given user email
+  Future<List<Map<String, dynamic>>> fetchFavoriteBookDetails(
+      String userEmail) async {
+    try {
+      // Step 1: Get the favorite books
+      List<String> favoriteBooks = await getFavoriteBooks(userEmail);
+
+      List<Map<String, dynamic>> bookDetailsList = [];
+
+      // Step 2: Get details for each favorite book
+      for (String book in favoriteBooks) {
+        Map<String, dynamic> bookDetails = await getBookDetails(book);
+        bookDetailsList.add(bookDetails);
+      }
+
+      return bookDetailsList;
+    } catch (e) {
+      print('Error fetching book details: $e');
+      return []; // Return an empty list in case of error
+    }
   }
 }
