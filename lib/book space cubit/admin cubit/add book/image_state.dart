@@ -16,3 +16,13 @@ class ImageFailure extends ImageState {
 
   ImageFailure({required this.message});
 }
+
+final class ImageUpdateLoading extends ImageState {}
+
+final class ImageUpdateSuccessful extends ImageState {}
+
+class ImageUpdateFailure extends ImageState {
+  final String message;
+
+  ImageUpdateFailure({required this.message});
+}

@@ -220,4 +220,131 @@ class FirebaseBook {
       return []; // Return an empty list in case of error
     }
   }
+
+  Future<List<QueryDocumentSnapshot>> searchBooksByName(String name) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .where('name', isGreaterThanOrEqualTo: name)
+        .where('name', isLessThanOrEqualTo: name + '\uf8ff')
+        .get();
+    return querySnapshot.docs;
+  }
+
+  Future<void> updateBook(
+      {required String bookName,
+      required String description,
+      required String author,
+      required String category,
+      required String price,
+      required String rate}) async {
+    try {
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection('books')
+          .where('name', isEqualTo: bookName)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        await FirebaseFirestore.instance
+            .collection('books')
+            .doc(querySnapshot.docs[0].id)
+            .update({
+          'description': description,
+          'author': author,
+          'category': category,
+          'price': price,
+          'rate': rate,
+        });
+        print("Book updated successfully");
+      } else {
+        print("No book found with the name: $bookName");
+      }
+    } catch (e) {
+      print("Failed to update book: $e");
+    }
+  }
+
+  Future<void> deleteBookFromFirestore(String bookName) async {
+    try {
+      // Query the book by name from the 'books' collection
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection('books')
+          .where('name', isEqualTo: bookName)
+          .get();
+
+      // Check if the book exists
+      if (querySnapshot.docs.isNotEmpty) {
+        // Delete the book from 'books' collection
+        await FirebaseFirestore.instance
+            .collection('books')
+            .doc(querySnapshot.docs[0].id)
+            .delete();
+        print("Book deleted successfully from Firestore");
+      } else {
+        print("No book found with the name: $bookName");
+      }
+    } catch (e) {
+      print("Failed to delete book from Firestore: $e");
+    }
+  }
+
+  // Method to delete the book's image from Firebase Storage
+  Future<void> deleteBookImageFromStorage(String bookName) async {
+    try {
+      // Try multiple possible extensions
+      List<String> extensions = ['jpeg', 'jpg', 'png'];
+      bool deleted = false;
+
+      for (String ext in extensions) {
+        String imagePath = 'images/$bookName.$ext';
+        print("Attempting to delete image at: $imagePath");
+
+        try {
+          await FirebaseStorage.instance.ref(imagePath).delete();
+          print("Image deleted successfully from Firebase Storage");
+          deleted = true;
+          break; // Exit loop if image was deleted successfully
+        } catch (e) {
+          print("Image not found at $imagePath");
+        }
+      }
+
+      if (!deleted) {
+        print(
+            "Failed to delete image: No matching image found with any extension.");
+      }
+    } catch (e) {
+      print("Failed to delete image from Firebase Storage: $e");
+    }
+  }
+
+  // Method to delete the book from user favorites in Firestore
+  Future<void> deleteBookFromUserFavorites(String bookName) async {
+    try {
+      // Fetch all users from 'user_favorites' collection
+      var userFavoritesSnapshot =
+          await FirebaseFirestore.instance.collection('user_favorites').get();
+
+      // Loop through each user document
+      for (var userDoc in userFavoritesSnapshot.docs) {
+        // Get the user's favorites list
+        List<dynamic> favorites = userDoc.data()['favorites'];
+
+        // Check if the book is in the user's favorites list
+        if (favorites.contains(bookName)) {
+          // Remove the book from the favorites list
+          favorites.remove(bookName);
+
+          // Update the user's favorites list in Firestore
+          await FirebaseFirestore.instance
+              .collection('user_favorites')
+              .doc(userDoc.id)
+              .update({'favorites': favorites});
+
+          print("Book removed from favorites for user: ${userDoc.id}");
+        }
+      }
+    } catch (e) {
+      print("Failed to delete book from user favorites: $e");
+    }
+  }
 }

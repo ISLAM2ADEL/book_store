@@ -9,6 +9,7 @@ class ImageCubit extends Cubit<ImageState> {
 
   bool isImage = false;
   bool isPicked = false;
+  bool isUpdated = false;
   FirebaseBook firebaseBook = FirebaseBook();
 
   Future<void> uploadImage() async {
@@ -51,5 +52,42 @@ class ImageCubit extends Cubit<ImageState> {
     isPicked = false;
 
     emit(ImageInitial());
+  }
+
+  void update() {
+    isUpdated = true;
+  }
+
+  bool getUpdated() {
+    return isUpdated;
+  }
+
+  void resetUpdate() {
+    isUpdated = false;
+    emit(ImageInitial());
+  }
+
+  void updateBook({
+    required String bookName,
+    required String description,
+    required String author,
+    required String category,
+    required String price,
+    required String rate,
+  }) async {
+    emit(ImageUpdateLoading());
+    try {
+      await firebaseBook.updateBook(
+        bookName: bookName,
+        description: description,
+        author: author,
+        category: category,
+        price: price,
+        rate: rate,
+      );
+      emit(ImageUpdateSuccessful());
+    } catch (e) {
+      emit(ImageUpdateFailure(message: e.toString()));
+    }
   }
 }

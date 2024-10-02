@@ -1,5 +1,6 @@
 import 'package:book_store/admin%20screens/add%20book/add_book.dart';
 import 'package:book_store/book%20space%20cubit/admin%20cubit/bottom%20bar/admin_bar_cubit.dart';
+import 'package:book_store/book%20space%20cubit/admin%20cubit/edit%20book/edit_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,7 @@ class AdminNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AdminBarCubit>();
+    final editCubit = context.read<EditCubit>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Container(
@@ -50,7 +52,8 @@ class AdminNavBar extends StatelessWidget {
                     ),
                     onTap: () {
                       cubit.updateBook();
-                      Get.offAll(const EditBook());
+                      editCubit.getAllBooks();
+                      Get.offAll(EditBook());
                     },
                   ),
                   InkWell(

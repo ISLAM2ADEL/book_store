@@ -1,17 +1,22 @@
+import 'package:book_store/Auth/custom%20widget/custom_text_form.dart';
 import 'package:book_store/admin%20screens/admin%20app%20bar/admin_app_bar.dart';
+import 'package:book_store/admin%20screens/edit%20book/delete_book_page.dart';
+import 'package:book_store/admin%20screens/edit%20book/edit_book_page.dart';
+import 'package:book_store/book%20space%20cubit/admin%20cubit/edit%20book/edit_cubit.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import '../../const.dart';
 import '../admin bottom nav bar/admin_nav_bar.dart';
 
 class EditBook extends StatelessWidget {
-  const EditBook({super.key});
-
+  EditBook({super.key});
+  TextEditingController search = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    //final cubit = context.read<ImageCubit>();
+    final cubit = context.read<EditCubit>();
     return Scaffold(
       backgroundColor: white,
       bottomNavigationBar: const AdminNavBar(),
@@ -20,25 +25,79 @@ class EditBook extends StatelessWidget {
         child: AdminAppBar(),
       ),
       body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10.0, left: 10.0),
-            child: ListView.separated(
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: 15,
-              itemBuilder: (context, index) => _bookContainer(height, width),
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 15,
+        child: Column(
+          children: [
+            SizedBox(
+              width: width * .9,
+              height: height * .075,
+              child: CustomTextForm(
+                controller: search,
+                hintText: "Search",
+                icon: Icons.search,
+                onChangedSearch: true,
+                onChanged: (val) {
+                  cubit.setSearchTerm(val);
+                  if (val.isEmpty) {
+                    cubit.getAllBooks();
+                  } else {
+                    cubit.getSpecifiedBook(val);
+                  }
+                },
               ),
             ),
-          ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10.0, left: 10.0),
+                child: BlocBuilder<EditCubit, EditState>(
+                  builder: (context, state) {
+                    if (state is EditLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (state is EditSuccess) {
+                      final data = state.data;
+                      return ListView.separated(
+                        itemCount: data.length,
+                        itemBuilder: (context, index) => _bookContainer(
+                          height,
+                          width,
+                          imageUrl: data[index]["imageUrl"],
+                          bookName: data[index]["name"],
+                          authorName: data[index]["author"],
+                          bookCategory: data[index]["category"],
+                          bookRate: data[index]["rate"],
+                          bookPrice: data[index]["price"],
+                          context: context,
+                        ),
+                        separatorBuilder: (context, index) => const SizedBox(
+                          height: 15,
+                        ),
+                      );
+                    }
+                    return const Text("");
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _bookContainer(double height, double width) {
+  Widget _bookContainer(
+    double height,
+    double width, {
+    required String imageUrl,
+    required String bookName,
+    required String authorName,
+    required String bookCategory,
+    required String bookRate,
+    required String bookPrice,
+    required BuildContext context,
+  }) {
+    final cubit = context.read<EditCubit>();
     return Container(
       height: height * .2,
       width: width * .9,
@@ -69,7 +128,7 @@ class EditBook extends StatelessWidget {
               child: SizedBox(
                 height: height * .17,
                 width: width * .25,
-                child: Image.asset("${path}hunger.png"),
+                child: Image.network(imageUrl),
               ),
             ),
             const SizedBox(
@@ -83,51 +142,71 @@ class EditBook extends StatelessWidget {
                   width: width * .55,
                   child: Row(
                     children: [
-                      const Text(
-                        "Alone",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
+                      SizedBox(
+                        width: 105,
+                        child: Text(
+                          bookName,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                       const Spacer(),
-                      _editBoxes(
-                          colors: Colors.orangeAccent, icons: Icons.edit),
+                      InkWell(
+                        child: _editBoxes(
+                            colors: Colors.orangeAccent, icons: Icons.edit),
+                        onTap: () {
+                          cubit.getBookData(bookName);
+                          Get.to(EditBookPage());
+                        },
+                      ),
                       const SizedBox(
                         width: 10,
                       ),
-                      _editBoxes(colors: Colors.red, icons: Icons.delete),
+                      InkWell(
+                        child:
+                            _editBoxes(colors: Colors.red, icons: Icons.delete),
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return DeleteBookPage(bookName: bookName);
+                              });
+                        },
+                      ),
                     ],
                   ),
                 ),
-                const Text(
-                  "By EDFSsdfdsg",
-                  style: TextStyle(
+                Text(
+                  "By $authorName",
+                  style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 15,
                   ),
                 ),
-                const Text(
-                  "550 Pages",
-                  style: TextStyle(
+                Text(
+                  bookCategory,
+                  style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 15,
                   ),
                 ),
                 SizedBox(
                   width: width * .55,
-                  child: const Row(
+                  child: Row(
                     children: [
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.star,
                             color: Colors.yellow,
                           ),
                           Text(
-                            "4.5",
-                            style: TextStyle(
+                            bookRate,
+                            style: const TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -135,10 +214,10 @@ class EditBook extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Text(
-                        "\$ 55",
-                        style: TextStyle(
+                        "\$ $bookPrice",
+                        style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
