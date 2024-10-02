@@ -1,4 +1,5 @@
 import 'package:book_store/admin%20screens/add%20book/add_book.dart';
+import 'package:book_store/admin%20screens/dashboard%20screen/dashboard.dart';
 import 'package:book_store/book%20space%20cubit/admin%20cubit/bottom%20bar/admin_bar_cubit.dart';
 import 'package:book_store/book%20space%20cubit/admin%20cubit/edit%20book/edit_cubit.dart';
 import 'package:flutter/cupertino.dart';
@@ -66,6 +67,7 @@ class AdminNavBar extends StatelessWidget {
                     ),
                     onTap: () {
                       cubit.dashboard();
+                      Get.off(() => const Dashboard());
                     },
                   ),
                 ],

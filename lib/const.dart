@@ -10,3 +10,6 @@ const fontColor = Color.fromARGB(255, 73, 83, 70);
 const backGroundColor = Color.fromARGB(255, 241, 238, 233);
 const String path = "assets/images/";
 const String imagePath = "lib/Images/";
+const int bookStore = 200;
+const int categoryCount = 100;
+const int authorCount = 100;

@@ -347,4 +347,44 @@ class FirebaseBook {
       print("Failed to delete book from user favorites: $e");
     }
   }
+
+  Future<int> getBookCount() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('books').get();
+    int documentCount = querySnapshot.docs.length;
+    return documentCount;
+  }
+
+  Future<int> getFreeBookCount() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .where('price', isEqualTo: 'Free')
+        .get();
+    int documentCount = querySnapshot.docs.length;
+    return documentCount;
+  }
+
+  Future<int> getCategoriesCount() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('books').get();
+    Set<String> categories = {};
+    for (var doc in querySnapshot.docs) {
+      String category = doc[
+          'category']; // Replace with the field name containing the category
+      categories.add(category);
+    }
+    return categories.length;
+  }
+
+  Future<int> getAuthorsCount() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('books').get();
+    Set<String> categories = {};
+    for (var doc in querySnapshot.docs) {
+      String category =
+          doc['author']; // Replace with the field name containing the category
+      categories.add(category);
+    }
+    return categories.length;
+  }
 }

@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'book space cubit/admin cubit/add book/image_cubit.dart';
+import 'book space cubit/admin cubit/dashboard cubit/dash_cubit.dart';
 import 'book space cubit/authors cubit/author_cubit.dart';
 import 'book space cubit/favourite cubit/favourite_cubit.dart';
 
@@ -89,6 +90,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => DescriptionCubit(),
+        ),
+        BlocProvider(
+          create: (context) => DashCubit(),
         ),
       ],
       child: const GetMaterialApp(

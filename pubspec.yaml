@@ -48,6 +48,7 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
   enefty_icons: ^1.0.7
   icons_plus: ^5.0.0
+  percent_indicator: ^4.0.1
   #
   firebase_core: ^3.5.0
   cloud_firestore: ^5.4.2
