@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:book_store/favourite%20screen/favorite.dart';
 import 'package:book_store/library%20screens/library.dart';
-import 'package:book_store/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:book_store/const.dart';
@@ -18,97 +17,104 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseForm firebaseForm = FirebaseForm();
-    return BlocProvider(
-      create: (context) => SettingsCubit(),
-      child: Scaffold(
+    final cubit = context.read<SettingsCubit>();
+    String? email = cubit.getEmail();
+    cubit.getPhoto(email!);
+
+    // Initialize `photoUrl` with a default value
+    String photoUrl = "No profile image found for this user.";
+
+    return Scaffold(
+      backgroundColor: backGroundColor,
+      appBar: AppBar(
         backgroundColor: backGroundColor,
-        appBar: AppBar(
-          backgroundColor: backGroundColor,
-          leading: InkWell(
-            child: const Icon(Icons.keyboard_backspace_outlined),
-            onTap: () {
-              Get.off(const Home());
-            },
-          ),
-          title: const Text(
-            "Settings",
-            style: TextStyle(
-              color: fontColor,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          centerTitle: true,
+        leading: InkWell(
+          child: const Icon(Icons.keyboard_backspace_outlined),
+          onTap: () {
+            Get.off(const Home());
+          },
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: BlocBuilder<SettingsCubit, SettingsState>(
-            builder: (context, state) {
-              File? imgFile;
-
-              if (state is SettingsImagePicked) {
-                imgFile = state.imageFile;
-              }
-
-              return SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const EditProfileScreen()));
-                          },
-                          child: _profileBar(imgFile)),
-                    ),
-                    _buildModelsSection(context),
-                    _buildSettingsSection(context, firebaseForm),
-                  ],
-                ),
-              );
-            },
+        title: const Text(
+          "Settings",
+          style: TextStyle(
+            color: fontColor,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
+        ),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: BlocBuilder<SettingsCubit, SettingsState>(
+          builder: (context, state) {
+            File? imgFile;
+
+            if (state is SettingsImagePicked) {
+              imgFile = state.imageFile;
+              context.read<SettingsCubit>().setPhoto(imgFile, email);
+            }
+            if (state is SettingLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state is SettingSuccess) {
+              photoUrl = state.data; // Assign photo URL when available
+            }
+
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: _profileBar(photoUrl, email),
+                  ),
+                  _buildModelsSection(context),
+                  _buildSettingsSection(context, firebaseForm),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _profileBar(File? file) {
+  Widget _profileBar(String file, String? email) {
     return SizedBox(
       height: 50,
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: (file == null)
-                ? const AssetImage("${path}Frame_65.png")
-                : FileImage(file) as ImageProvider,
+            backgroundImage: (file == "No profile image found for this user.")
+                ? AssetImage("${path}Frame_65.png") as ImageProvider
+                : NetworkImage(file), // Use NetworkImage for valid URLs
             radius: 23,
           ),
-          const SizedBox(width: 10),
-          const Column(
+          const SizedBox(width: 15),
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                "UserEmail",
-                style:
-                    TextStyle(fontWeight: FontWeight.w300, color: Colors.grey),
+              const Text(
+                "User E-mail",
+                style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey),
               ),
               Text(
-                "aadna@gmail.com",
-                style:
-                    TextStyle(fontWeight: FontWeight.w300, color: Colors.grey),
+                email!,
+                style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey),
               ),
             ],
           ),
-          const Spacer(),
-          const Icon(Icons.arrow_forward_ios_outlined),
         ],
       ),
     );

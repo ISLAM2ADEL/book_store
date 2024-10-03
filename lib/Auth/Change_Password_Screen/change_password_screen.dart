@@ -37,7 +37,7 @@ class ChangePasswordScreen extends StatelessWidget {
             Get.to(const Home());
           },
           child: const Icon(
-            Icons.arrow_back,
+            Icons.keyboard_backspace_outlined,
             color: Color(0xFF3E463B),
           ),
         ),

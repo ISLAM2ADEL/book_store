@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 
 import '../../book space cubit/form cubit/text_form_cubit.dart';
-import '../../firebase/firebase auth/firebase_form.dart';
 import '../custom widget/custom_text_form.dart';
 
 class SignUpScreen extends StatelessWidget {

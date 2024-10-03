@@ -8,6 +8,7 @@ import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/ca
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:book_store/category%20screen/book_category.dart';
 import 'package:book_store/const.dart';
+import 'package:book_store/cubit/settings_cubit.dart';
 import 'package:book_store/custom%20bottom%20bar/custom_bottom_bar.dart';
 import 'package:book_store/home%20screen/custom%20text%20widget/custom_text.dart';
 import 'package:book_store/search%20screen/search_screen.dart';
@@ -31,12 +32,14 @@ class Home extends StatelessWidget {
     final bestCubit = context.read<BestCubit>();
     final categoryCubit = context.read<CategoryCubit>();
     final favouriteCubit = context.read<FavouriteCubit>();
+    final settingCubit = context.read<SettingsCubit>();
     homeCubit.getBooksMostPopular();
     bestCubit.getBooksBestSeller();
     categoryCubit.getCategories();
     authorCubit.getAuthors();
     final userEmail = FirebaseAuth.instance.currentUser?.email;
     favouriteCubit.getFavBooks(userEmail!);
+    settingCubit.getPhoto(userEmail);
     return Scaffold(
       backgroundColor: white,
       body: SingleChildScrollView(
@@ -48,7 +51,7 @@ class Home extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _upperBar(width),
+              _upperBar(width, context),
               const SizedBox(
                 height: 20,
               ),
@@ -700,15 +703,28 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _upperBar(width) {
+  Widget _upperBar(width, BuildContext context) {
+    final cubit = context.read<SettingsCubit>();
+    String photoUrl = "No profile image found for this user.";
     return Row(
       children: [
-        InkWell(
-          child: const CircleAvatar(
-            radius: 22,
-            backgroundImage: AssetImage("${path}user image.png"),
-          ),
-          onTap: () {},
+        BlocBuilder<SettingsCubit, SettingsState>(
+          builder: (context, state) {
+            if (state is SettingLoading) {
+              return CircularProgressIndicator();
+            }
+            if (state is SettingSuccess) {
+              photoUrl = state.data;
+            }
+            return CircleAvatar(
+              backgroundImage: (photoUrl ==
+                      "No profile image found for this user.")
+                  ? AssetImage("${path}Frame_65.png")
+                  : NetworkImage(photoUrl)
+                      as ImageProvider, // Cast to ImageProvider to avoid type mismatch
+              radius: 18,
+            );
+          },
         ),
         SizedBox(
           width: width * .20,

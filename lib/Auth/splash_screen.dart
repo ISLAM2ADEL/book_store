@@ -33,23 +33,19 @@ class _SplashscreenState extends State<Splashscreen> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: const Color(0xFFeae9e5),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            height: height * 0.2,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(50.0),
-            child: Center(
+          Center(
+            child: SizedBox(
+              height: 250,
+              width: 250,
               child: Image.asset(
                 "${imagePath}images_processed.jpeg",
-                fit: BoxFit.cover,
-              ), // Correct path to the image
-            ),
+              ),
+            ), // Correct path to the image
           ),
         ],
       ),
