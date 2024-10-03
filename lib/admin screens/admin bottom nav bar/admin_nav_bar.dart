@@ -94,7 +94,7 @@ class AdminNavBar extends StatelessWidget {
         Icon(
           icons,
           color: bottomColor,
-          size: 35,
+          size: 30,
         ),
         Text(
           text,
