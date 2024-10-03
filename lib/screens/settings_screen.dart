@@ -1,10 +1,11 @@
 import 'dart:io';
+
+import 'package:book_store/const.dart';
+import 'package:book_store/cubit/settings_cubit.dart';
 import 'package:book_store/favourite%20screen/favorite.dart';
 import 'package:book_store/library%20screens/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:book_store/const.dart';
-import 'package:book_store/cubit/settings_cubit.dart';
 import 'package:get/get.dart';
 
 import '../Auth/Change_Password_Screen/change_password_screen.dart';
@@ -95,25 +96,28 @@ class SettingsScreen extends StatelessWidget {
             radius: 23,
           ),
           const SizedBox(width: 15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "User E-mail",
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey),
-              ),
-              Text(
-                email!,
-                style: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey),
-              ),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "User E-mail",
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey),
+                ),
+                Text(
+                  email!,
+                  style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ],
       ),

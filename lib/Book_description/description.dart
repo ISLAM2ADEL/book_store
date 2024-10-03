@@ -13,6 +13,7 @@ import '../category screen/book_category.dart';
 
 class BookDescription extends StatelessWidget {
   final String bookName;
+
   const BookDescription({super.key, required this.bookName});
 
   @override
@@ -315,7 +316,7 @@ class BookDescription extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white70,
+                            color: Colors.white,
                           ),
                         )),
                       ),
