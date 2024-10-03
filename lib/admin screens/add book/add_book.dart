@@ -149,6 +149,7 @@ class AddBook extends StatelessWidget {
           hintText: "Book Rate",
           icons: Icons.star_rate,
           controller: rateController,
+          phone: true,
           validator: (val) {
             if (val!.isEmpty) {
               return "This field can not be empty";
@@ -249,6 +250,7 @@ class AddBook extends StatelessWidget {
     required IconData icons,
     required TextEditingController controller,
     required String? Function(String?)? validator,
+    bool phone = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,6 +265,7 @@ class AddBook extends StatelessWidget {
         ),
         const SizedBox(height: 13),
         CustomTextForm(
+          isPhone: phone ? true : false,
           hintText: hintText,
           icon: icons,
           controller: controller,

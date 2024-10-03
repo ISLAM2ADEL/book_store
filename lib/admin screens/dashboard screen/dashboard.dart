@@ -83,6 +83,12 @@ class Dashboard extends StatelessWidget {
     required int percentage,
     required int totalBooks,
   }) {
+    // Ensure totalBooks is not zero to avoid division by zero
+    double percentValue = totalBooks > 0 ? (percentage / totalBooks) : 0.0;
+
+    // Clamp the value to be between 0.0 and 1.0
+    percentValue = percentValue.clamp(0.0, 1.0);
+
     return Padding(
       padding: const EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0),
       child: Row(
@@ -100,7 +106,7 @@ class Dashboard extends StatelessWidget {
             animation: true,
             radius: 42.0,
             lineWidth: 7.0,
-            percent: percentage / totalBooks,
+            percent: percentValue,
             center: Text(number),
             animationDuration: 1200,
             progressColor: colors,
