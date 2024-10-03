@@ -40,4 +40,20 @@ class FavouriteCubit extends Cubit<FavouriteState> {
       return [];
     }
   }
+
+  Future<void> deleteFavorite(String bookName, BuildContext context) async {
+    emit(FavouriteDeleteLoading());
+    try {
+      await firebaseBook.deleteUserFavorites(bookName);
+      Get.snackbar(
+        "Removed from Favorite",
+        "Book is Removed from Favorite Section",
+        colorText: Colors.white,
+        backgroundColor: Colors.green,
+      );
+      emit(FavouriteDeleteSuccess());
+    } catch (e) {
+      emit(FavouriteDeleteFailure());
+    }
+  }
 }

@@ -23,3 +23,9 @@ final class FavouriteAddLoading extends FavouriteState {}
 final class FavouriteAddSuccess extends FavouriteState {}
 
 final class FavouriteAddFailure extends FavouriteState {}
+
+final class FavouriteDeleteLoading extends FavouriteState {}
+
+final class FavouriteDeleteSuccess extends FavouriteState {}
+
+final class FavouriteDeleteFailure extends FavouriteState {}

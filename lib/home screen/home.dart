@@ -1,4 +1,5 @@
 import 'package:book_store/Book_description/description.dart';
+import 'package:book_store/book%20space%20cubit/admin%20cubit/edit%20book/edit_cubit.dart';
 import 'package:book_store/book%20space%20cubit/authors%20cubit/author_cubit.dart';
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
 import 'package:book_store/book%20space%20cubit/favourite%20cubit/favourite_cubit.dart';
@@ -51,7 +52,7 @@ class Home extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              _searchField(height, width),
+              _searchField(height, width, context),
               const SizedBox(
                 height: 20,
               ),
@@ -651,7 +652,8 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _searchField(height, width) {
+  Widget _searchField(height, width, BuildContext context) {
+    final editCubit = context.read<EditCubit>();
     return InkWell(
       child: Container(
         height: height * .06,
@@ -692,6 +694,7 @@ class Home extends StatelessWidget {
         ),
       ),
       onTap: () {
+        editCubit.getAllBooks();
         Get.to(() => const SearchScreen());
       },
     );

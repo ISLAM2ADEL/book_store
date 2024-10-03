@@ -115,6 +115,7 @@ Widget _bookBuild({
   bool isPrice = false,
   required BuildContext context,
 }) {
+  final cubit = context.read<FavouriteCubit>();
   return InkWell(
     onTap: () {
       Get.to(BookDescription(bookName: bookName));
@@ -211,7 +212,10 @@ Widget _bookBuild({
                           color: Colors.red,
                         ),
                         onTap: () {
-                          //favouriteCubit.setFavorite(bookName);
+                          cubit.deleteFavorite(bookName, context);
+                          Future.delayed(const Duration(seconds: 1), () {
+                            Get.offAll(const Favorite());
+                          });
                         },
                       ),
                     ),

@@ -1,13 +1,20 @@
 import 'package:book_store/home%20screen/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+
+import '../Book_description/description.dart';
+import '../book space cubit/admin cubit/edit book/edit_cubit.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: const Color(0xffF1EEE9),
       body: Padding(
@@ -16,7 +23,7 @@ class SearchScreen extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 16.0),
+                padding: const EdgeInsets.only(top: 25.0),
                 child: Row(
                   children: [
                     InkWell(
@@ -33,40 +40,52 @@ class SearchScreen extends StatelessWidget {
                       width: 20,
                     ),
                     Expanded(
-                      child: _searchBar(),
+                      child: _searchBar(context),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    bookWidget(
-                        bookName: 'Book1',
-                        authorName: 'AuthorName',
-                        description: 'Description',
-                        rating: '4.5'),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    bookWidget(
-                        bookName: 'Book2',
-                        authorName: 'AuthorName',
-                        description: 'Description',
-                        rating: '4.5'),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    bookWidget(
-                        bookName: 'Book3',
-                        authorName: 'AuthorName',
-                        description: 'Description',
-                        rating: '4.5'),
-                  ],
+                padding: const EdgeInsets.all(5.0),
+                child: BlocBuilder<EditCubit, EditState>(
+                  builder: (context, state) {
+                    if (state is EditLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (state is EditSuccess) {
+                      final data = state.data;
+                      // Wrapping the ListView in a SizedBox to avoid layout issues
+                      return SizedBox(
+                        height: height * 0.8, // Set height constraint
+                        child: ListView.separated(
+                          itemCount: data.length,
+                          itemBuilder: (context, index) => InkWell(
+                            child: _bookContainer(
+                              height,
+                              width,
+                              imageUrl: data[index]["imageUrl"],
+                              bookName: data[index]["name"],
+                              authorName: data[index]["author"],
+                              bookCategory: data[index]["category"],
+                              bookRate: data[index]["rate"],
+                              bookPrice: data[index]["price"],
+                              context: context,
+                            ),
+                            onTap: () {
+                              Get.off(() => BookDescription(
+                                  bookName: data[index]['name']));
+                            },
+                          ),
+                          separatorBuilder: (context, index) => const SizedBox(
+                            height: 15,
+                          ),
+                        ),
+                      );
+                    }
+                    return const Text(""); // In case of no data or empty state
+                  },
                 ),
               ),
             ],
@@ -76,89 +95,128 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  Container bookWidget(
-      {required String bookName,
-      required String authorName,
-      required String description,
-      required String rating}) {
+  Widget _bookContainer(
+    double height,
+    double width, {
+    required String imageUrl,
+    required String bookName,
+    required String authorName,
+    required String bookCategory,
+    required String bookRate,
+    required String bookPrice,
+    required BuildContext context,
+  }) {
     return Container(
-      //color: Color(0xffF1EEE9),
-      height: 160,
-      width: double.infinity,
+      height: height * .2,
+      width: width,
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Image.asset('assets/images/the island.png'),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 12.0),
-            child: Column(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(15.0),
+              ),
+              child: SizedBox(
+                height: height * .17,
+                width: width * .25,
+                child: Image.network(imageUrl),
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(
-                  bookName,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(authorName),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(description),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.star_outlined,
-                      color: Colors.yellow,
+                SizedBox(
+                  width: width * .50,
+                  child: Text(
+                    bookName,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Text(rating),
-                  ],
-                )
-              ],
-            ),
-          ),
-          const Spacer(),
-          const Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  'Paid',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
                   ),
                 ),
-                Row(
-                  children: [Text('50')],
-                )
+                Text(
+                  "By $authorName",
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
+                  ),
+                ),
+                Text(
+                  bookCategory,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
+                  ),
+                ),
+                SizedBox(
+                  width: width * .55,
+                  child: Row(
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                          ),
+                          Text(
+                            bookRate,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Text(
+                          "\$ $bookPrice",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
 
-  Widget _searchBar() {
+  Widget _searchBar(BuildContext context) {
+    final cubit = context.read<EditCubit>();
     return TextFormField(
+      onChanged: (val) {
+        cubit.setSearchTerm(val);
+        if (val.isEmpty) {
+          cubit.getAllBooks();
+        } else {
+          cubit.getSpecifiedBook(val);
+        }
+      },
       decoration: InputDecoration(
-        hintText: 'Titles or Authors',
+        hintText: 'Book Name or Title',
         hintStyle: const TextStyle(
           fontSize: 15,
           color: Colors.grey,

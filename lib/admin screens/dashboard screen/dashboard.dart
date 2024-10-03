@@ -13,11 +13,6 @@ class Dashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cubit = context.read<DashCubit>();
 
-    cubit.getBooks();
-    cubit.getFreeBooks();
-    cubit.getAuthors();
-    cubit.getCategories();
-
     return Scaffold(
       backgroundColor: white,
       bottomNavigationBar: const AdminNavBar(),
@@ -26,44 +21,56 @@ class Dashboard extends StatelessWidget {
         child: AdminAppBar(),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _percentageIndicator(
-              text: "Number of books in Book Space:",
-              colors: Colors.green,
-              number: cubit.bookCounters().toString(),
-              percentage: cubit.bookCounters(),
-              totalBooks: bookStore,
-            ),
-            _percentageIndicator(
-              text: "Number of paid books in Book Space:",
-              colors: Colors.orange,
-              number: cubit.paidBookCounters().toString(),
-              percentage: cubit.paidBookCounters(),
-              totalBooks: bookStore,
-            ),
-            _percentageIndicator(
-              text: "Number of free books in Book Space:",
-              colors: Colors.blue,
-              number: cubit.freeBookCounters().toString(),
-              percentage: cubit.freeBookCounters(),
-              totalBooks: bookStore,
-            ),
-            _percentageIndicator(
-              text: "Number of categories in Book Space:",
-              colors: Colors.red,
-              number: cubit.categoryCounters().toString(),
-              percentage: cubit.categoryCounters(),
-              totalBooks: categoryCount,
-            ),
-            _percentageIndicator(
-              text: "Number of authors in Book Space:",
-              colors: Colors.purple,
-              number: cubit.authorsCounters().toString(),
-              percentage: cubit.authorsCounters(),
-              totalBooks: authorCount,
-            ),
-          ],
+        child: BlocBuilder<DashCubit, DashState>(
+          builder: (context, state) {
+            if (state is DashLoading) {
+              return Transform.translate(
+                offset: const Offset(0, 330),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            return Column(
+              children: [
+                _percentageIndicator(
+                  text: "Number of books in Book Space:",
+                  colors: Colors.green,
+                  number: cubit.bookCounters().toString(),
+                  percentage: cubit.bookCounters(),
+                  totalBooks: bookStore,
+                ),
+                _percentageIndicator(
+                  text: "Number of paid books in Book Space:",
+                  colors: Colors.orange,
+                  number: cubit.paidBookCounters().toString(),
+                  percentage: cubit.paidBookCounters(),
+                  totalBooks: bookStore,
+                ),
+                _percentageIndicator(
+                  text: "Number of free books in Book Space:",
+                  colors: Colors.blue,
+                  number: cubit.freeBookCounters().toString(),
+                  percentage: cubit.freeBookCounters(),
+                  totalBooks: bookStore,
+                ),
+                _percentageIndicator(
+                  text: "Number of categories in Book Space:",
+                  colors: Colors.red,
+                  number: cubit.categoryCounters().toString(),
+                  percentage: cubit.categoryCounters(),
+                  totalBooks: categoryCount,
+                ),
+                _percentageIndicator(
+                  text: "Number of authors in Book Space:",
+                  colors: Colors.purple,
+                  number: cubit.authorsCounters().toString(),
+                  percentage: cubit.authorsCounters(),
+                  totalBooks: authorCount,
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

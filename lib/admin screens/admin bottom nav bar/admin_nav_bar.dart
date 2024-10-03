@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
+import '../../book space cubit/admin cubit/dashboard cubit/dash_cubit.dart';
 import '../edit book/edit_book.dart';
 
 class AdminNavBar extends StatelessWidget {
@@ -16,6 +17,7 @@ class AdminNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final cubit = context.read<AdminBarCubit>();
     final editCubit = context.read<EditCubit>();
+    final dashCubit = context.read<DashCubit>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Container(
@@ -67,6 +69,10 @@ class AdminNavBar extends StatelessWidget {
                     ),
                     onTap: () {
                       cubit.dashboard();
+                      dashCubit.getBooks();
+                      dashCubit.getFreeBooks();
+                      dashCubit.getAuthors();
+                      dashCubit.getCategories();
                       Get.off(() => const Dashboard());
                     },
                   ),

@@ -387,4 +387,40 @@ class FirebaseBook {
     }
     return categories.length;
   }
+
+  Future<void> deleteUserFavorites(String bookToRemove) async {
+    String? userEmail = FirebaseAuth.instance.currentUser?.email;
+
+    if (userEmail == null) {
+      print('User email is null. Cannot remove favorite.');
+      return;
+    }
+
+    CollectionReference userFavorites =
+        FirebaseFirestore.instance.collection('user_favorites');
+
+    DocumentReference userDoc = userFavorites.doc(userEmail);
+
+    DocumentSnapshot docSnapshot = await userDoc.get();
+
+    if (docSnapshot.exists && docSnapshot.data() != null) {
+      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+      if (data.containsKey('favorites')) {
+        List<String> favoriteBooks = List<String>.from(data['favorites']);
+
+        if (favoriteBooks.contains(bookToRemove)) {
+          favoriteBooks.remove(bookToRemove); // Remove the book
+
+          // Update Firestore with the new list of favorite books
+          await userDoc.set({
+            'favorites': favoriteBooks,
+          }, SetOptions(merge: true));
+        } else {
+          print('Book not found in favorites.');
+        }
+      }
+    } else {
+      print('No favorites found for this user.');
+    }
+  }
 }

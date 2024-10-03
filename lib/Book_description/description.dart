@@ -428,13 +428,15 @@ class BookDescription extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           SizedBox(
             width: 300,
-            child: Text(
-              text1,
-              style: const TextStyle(
-                  overflow: TextOverflow.ellipsis,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                  color: Colors.black),
+            child: Center(
+              child: Text(
+                text1,
+                style: const TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Colors.black),
+              ),
             ),
           ),
         ]),

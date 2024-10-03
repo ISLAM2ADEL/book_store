@@ -16,24 +16,41 @@ class DashCubit extends Cubit<DashState> {
   FirebaseBook firebaseBook = FirebaseBook();
 
   Future<void> getBooks() async {
-    int allBooks = await firebaseBook.getBookCount();
-    books = allBooks;
-    paidBooks = allBooks;
+    emit(DashLoading());
+    try {
+      int allBooks = await firebaseBook.getBookCount();
+      books = allBooks;
+      paidBooks = allBooks;
+      emit(DashSuccess());
+    } catch (e) {}
   }
 
   Future<void> getFreeBooks() async {
-    int freeBooksCount = await firebaseBook.getFreeBookCount();
-    freeBooks = freeBooksCount;
+    emit(DashLoading());
+    try {
+      int freeBooksCount = await firebaseBook.getFreeBookCount();
+      freeBooks = freeBooksCount;
+      emit(DashSuccess());
+    } catch (e) {}
   }
 
   Future<void> getCategories() async {
-    int categoriesCount = await firebaseBook.getCategoriesCount();
-    categories = categoriesCount;
+    emit(DashLoading());
+    try {
+      int categoriesCount = await firebaseBook.getCategoriesCount();
+      categories = categoriesCount;
+
+      emit(DashSuccess());
+    } catch (e) {}
   }
 
   Future<void> getAuthors() async {
-    int authorsCount = await firebaseBook.getAuthorsCount();
-    authors = authorsCount;
+    emit(DashLoading());
+    try {
+      int authorsCount = await firebaseBook.getAuthorsCount();
+      authors = authorsCount;
+      emit(DashSuccess());
+    } catch (e) {}
   }
 
   int bookCounters() {
