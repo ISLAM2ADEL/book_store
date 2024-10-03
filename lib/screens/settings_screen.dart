@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:book_store/favourite%20screen/favorite.dart';
+import 'package:book_store/library%20screens/library.dart';
 import 'package:book_store/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +25,7 @@ class SettingsScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: backGroundColor,
           leading: InkWell(
-            child: const Icon(Icons.arrow_back_ios),
+            child: const Icon(Icons.keyboard_backspace_outlined),
             onTap: () {
               Get.off(const Home());
             },
@@ -79,7 +81,7 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _profileBar(File? file) {
     return SizedBox(
-      height: 100,
+      height: 50,
       child: Row(
         children: [
           CircleAvatar(
@@ -94,8 +96,9 @@ class SettingsScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "UserName",
-                style: TextStyle(fontWeight: FontWeight.w300, color: fontColor),
+                "UserEmail",
+                style:
+                    TextStyle(fontWeight: FontWeight.w300, color: Colors.grey),
               ),
               Text(
                 "aadna@gmail.com",
@@ -114,30 +117,29 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildModelsSection(dynamic context) {
     final height = MediaQuery.of(context).size.height;
     return SizedBox(
-      height: height * .2, // Set a fixed height for models
+      height: height * .168, // Set a fixed height for models
       child: Column(
         children: [
-          Row(
-            children: [
-              _models(
-                  context: context,
-                  image: "solar_bag-smile-bold-duotone.png",
-                  text: "Orders"),
-              const SizedBox(width: 10),
-              _models(
-                  image: "solar_library-bold-duotone.png",
-                  text: "Library",
-                  context: context),
-            ],
+          InkWell(
+            child: _models(
+                image: "solar_library-bold-duotone.png",
+                text: "Library",
+                context: context),
+            onTap: () {
+              Get.off(const Library());
+            },
           ),
-          const SizedBox(height: 10), // Space between rows
-          Row(
-            children: [
-              _models(
-                  image: "solar_heart-bold.png",
-                  text: "Wish List",
-                  context: context),
-            ],
+          const SizedBox(
+            height: 10,
+          ),
+          InkWell(
+            child: _models(
+                image: "solar_heart-bold.png",
+                text: "Wish List",
+                context: context),
+            onTap: () {
+              Get.off(const Favorite());
+            },
           ),
         ],
       ),
@@ -146,14 +148,17 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _models({String? image, String? text, required BuildContext context}) {
     final height = MediaQuery.of(context).size.height;
-    return Expanded(
-      child: Container(
-        height: height * .07,
-        margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-        decoration: BoxDecoration(
-            color: fontColor, borderRadius: BorderRadius.circular(20)),
+    return Container(
+      height: height * .065,
+      margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 18.0, right: 18.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset("$path$image"),
             const SizedBox(width: 5),
@@ -162,8 +167,13 @@ class SettingsScreen extends StatelessWidget {
               style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white),
+                  color: Colors.black),
             ),
+            const Spacer(),
+            const Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.grey,
+            )
           ],
         ),
       ),
@@ -175,28 +185,31 @@ class SettingsScreen extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Row(
-          children: [
-            image == null ? Icon(icon) : Image.asset(image),
-            const SizedBox(width: 10),
-            Text(text),
-            const Spacer(),
-            if (value != null)
-              Text(value,
-                  style: const TextStyle(fontSize: 14, color: Colors.grey)),
-            const Icon(Icons.arrow_forward_ios_outlined),
-          ],
+        height: 50,
+        margin: const EdgeInsets.only(bottom: 15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30.0),
+          color: Colors.white,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: Row(
+            children: [
+              image == null ? Icon(icon) : Image.asset(image),
+              const SizedBox(width: 10),
+              Text(text),
+              const Spacer(),
+              if (value != null)
+                Text(value,
+                    style: const TextStyle(fontSize: 14, color: Colors.grey)),
+              const Icon(
+                Icons.arrow_forward_ios_outlined,
+                color: Colors.grey,
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildDivider() {
-    return const Divider(
-      height: 20,
-      color: Colors.grey,
-      thickness: 1,
     );
   }
 
@@ -205,11 +218,6 @@ class SettingsScreen extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text(
-            "General Settings",
-            style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: fontColor),
-          ),
         ),
         _buildGeneralSetting(
           "Change Photo",
@@ -218,7 +226,6 @@ class SettingsScreen extends StatelessWidget {
             context.read<SettingsCubit>().pickImage();
           },
         ),
-        _buildDivider(),
         _buildGeneralSetting(
           "Change Password",
           image: "${path}solar_password-line-duotone.png",
@@ -229,19 +236,11 @@ class SettingsScreen extends StatelessWidget {
                     builder: (context) => ChangePasswordScreen()));
           },
         ),
-        _buildDivider(),
-        _buildGeneralSetting(
-          "Language",
-          image: "${path}tabler_language.png",
-          value: "English",
-        ),
-        _buildDivider(),
         _buildGeneralSetting(
           "Theme",
           icon: Icons.dark_mode,
           value: "Lite",
         ),
-        _buildDivider(),
         _buildGeneralSetting("Log Out", icon: Icons.logout, onTap: () {
           firebase.signOutUser();
         }),

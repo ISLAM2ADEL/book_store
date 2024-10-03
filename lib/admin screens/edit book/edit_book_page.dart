@@ -32,7 +32,7 @@ class EditBookPage extends StatelessWidget {
         backgroundColor: white,
         leading: InkWell(
           child: const Icon(
-            Icons.arrow_back_ios_new,
+            Icons.keyboard_backspace_outlined,
             color: Colors.black,
             size: 25,
           ),

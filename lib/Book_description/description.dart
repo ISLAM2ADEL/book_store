@@ -28,7 +28,7 @@ class BookDescription extends StatelessWidget {
       appBar: AppBar(
         leading: InkWell(
           child: const Icon(
-            Icons.arrow_back_ios,
+            Icons.keyboard_backspace_outlined,
             color: Colors.black,
           ),
           onTap: () {
