@@ -15,72 +15,70 @@ class CustomBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<BottomCubit>();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      child: Container(
-        height: 70,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        child: BlocBuilder<BottomCubit, BottomState>(
-          builder: (context, state) {
-            Bar myChoice = cubit.getBarChoice();
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InkWell(
-                  child: _bottomNavButtons(
-                    icons: Bootstrap.house,
-                    text: "Home",
-                    bottomColor:
-                        myChoice == Bar.home ? Colors.black : Colors.grey,
-                  ),
-                  onTap: () {
-                    cubit.home();
-                    Get.off(() => const Home());
-                  },
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
+      height: 70,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      child: BlocBuilder<BottomCubit, BottomState>(
+        builder: (context, state) {
+          Bar myChoice = cubit.getBarChoice();
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              InkWell(
+                child: _bottomNavButtons(
+                  icons: Bootstrap.house,
+                  text: "Home",
+                  bottomColor:
+                      myChoice == Bar.home ? Colors.black : Colors.grey,
                 ),
-                InkWell(
-                  child: _bottomNavButtons(
-                    icons: Bootstrap.heart,
-                    text: "Favourite",
-                    bottomColor:
-                        myChoice == Bar.favourite ? Colors.black : Colors.grey,
-                  ),
-                  onTap: () {
-                    Get.off(() => const Favorite());
-                    cubit.favourite();
-                  },
+                onTap: () {
+                  cubit.home();
+                  Get.off(() => const Home());
+                },
+              ),
+              InkWell(
+                child: _bottomNavButtons(
+                  icons: Bootstrap.heart,
+                  text: "Favourite",
+                  bottomColor:
+                      myChoice == Bar.favourite ? Colors.black : Colors.grey,
                 ),
-                InkWell(
-                  child: _bottomNavButtons(
-                    icons: BoxIcons.bx_category,
-                    text: "Category",
-                    bottomColor:
-                        myChoice == Bar.category ? Colors.black : Colors.grey,
-                  ),
-                  onTap: () {
-                    cubit.category();
-                    Get.off(() => const Category());
-                  },
+                onTap: () {
+                  Get.off(() => const Favorite());
+                  cubit.favourite();
+                },
+              ),
+              InkWell(
+                child: _bottomNavButtons(
+                  icons: BoxIcons.bx_category,
+                  text: "Category",
+                  bottomColor:
+                      myChoice == Bar.category ? Colors.black : Colors.grey,
                 ),
-                InkWell(
-                  child: _bottomNavButtons(
-                    icons: BoxIcons.bx_book_bookmark,
-                    text: "My Library",
-                    bottomColor:
-                        myChoice == Bar.myLibrary ? Colors.black : Colors.grey,
-                  ),
-                  onTap: () {
-                    cubit.myLibrary();
-                    Get.off(() => const Library());
-                  },
+                onTap: () {
+                  cubit.category();
+                  Get.off(() => const Category());
+                },
+              ),
+              InkWell(
+                child: _bottomNavButtons(
+                  icons: BoxIcons.bx_book_bookmark,
+                  text: "My Library",
+                  bottomColor:
+                      myChoice == Bar.myLibrary ? Colors.black : Colors.grey,
                 ),
-              ],
-            );
-          },
-        ),
+                onTap: () {
+                  cubit.myLibrary();
+                  Get.off(() => const Library());
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }

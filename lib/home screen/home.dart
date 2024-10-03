@@ -704,14 +704,13 @@ class Home extends StatelessWidget {
   }
 
   Widget _upperBar(width, BuildContext context) {
-    final cubit = context.read<SettingsCubit>();
     String photoUrl = "No profile image found for this user.";
     return Row(
       children: [
         BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, state) {
             if (state is SettingLoading) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
             if (state is SettingSuccess) {
               photoUrl = state.data;
@@ -719,7 +718,7 @@ class Home extends StatelessWidget {
             return CircleAvatar(
               backgroundImage: (photoUrl ==
                       "No profile image found for this user.")
-                  ? AssetImage("${path}Frame_65.png")
+                  ? const AssetImage("${path}Frame_65.png")
                   : NetworkImage(photoUrl)
                       as ImageProvider, // Cast to ImageProvider to avoid type mismatch
               radius: 18,
