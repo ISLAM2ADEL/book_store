@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:book_store/screens/change_pass.dart';
 import 'package:book_store/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +6,7 @@ import 'package:book_store/const.dart';
 import 'package:book_store/cubit/settings_cubit.dart';
 import 'package:get/get.dart';
 
+import '../Auth/Change_Password_Screen/change_password_screen.dart';
 import '../firebase/firebase auth/firebase_form.dart';
 import '../home screen/home.dart';
 
@@ -223,8 +223,10 @@ class SettingsScreen extends StatelessWidget {
           "Change Password",
           image: "${path}solar_password-line-duotone.png",
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const UpdatePass()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ChangePasswordScreen()));
           },
         ),
         _buildDivider(),

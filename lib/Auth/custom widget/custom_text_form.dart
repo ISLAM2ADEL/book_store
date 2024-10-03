@@ -1,4 +1,3 @@
-import 'package:book_store/book%20space%20cubit/admin%20cubit/edit%20book/edit_cubit.dart';
 import 'package:book_store/book%20space%20cubit/form%20cubit/text_form_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +31,6 @@ class CustomTextForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<TextFormCubit>();
-    final editCubit = context.read<EditCubit>();
     return BlocBuilder<TextFormCubit, TextFormState>(
       builder: (context, state) {
         bool obscureText = cubit.getObscureText();

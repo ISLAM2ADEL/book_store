@@ -1,11 +1,15 @@
-import 'package:book_store/Book_description/similar.dart';
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
 import 'package:book_store/book%20space%20cubit/description%20Cubit/description_cubit.dart';
+import 'package:book_store/book%20space%20cubit/library%20cubit/library_cubit.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/home%20screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+
+import '../book space cubit/home cubit/category cubit/category_cubit.dart';
+import '../book space cubit/home cubit/home_cubit.dart';
+import '../category screen/book_category.dart';
 
 class BookDescription extends StatelessWidget {
   final String bookName;
@@ -18,6 +22,7 @@ class BookDescription extends StatelessWidget {
     final bottomCubit = context.read<BottomCubit>();
     final descriptionCubit = context.read<DescriptionCubit>();
     descriptionCubit.getDescription(bookName);
+    final libraryCubit = context.read<LibraryCubit>();
     return Scaffold(
       backgroundColor: const Color(0xFFF1EEE9),
       appBar: AppBar(
@@ -105,69 +110,59 @@ class BookDescription extends StatelessWidget {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
-                                color: Colors.black,
+                                color: darkGreen,
                               ),
-                            )
+                            ),
                           ],
                         ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         // Col of hashtags
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 4,
-                          children: [
-                            _buildHashtagChip('#Education'),
-                            _buildHashtagChip('#Fantasy'),
-                            _buildHashtagChip('#Fiction'),
-                            _buildHashtagChip('#Novels'),
-                            _buildHashtagChip('#Adventure'),
-                            _buildHashtagChip('#Romance'),
-                            _buildHashtagChip('#ScienceFiction'),
-                          ],
+                        BlocBuilder<CategoryCubit, CategoryState>(
+                          builder: (context, state) {
+                            if (state is CategoryLoading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            if (state is CategorySuccess) {
+                              final categories = state.data;
+                              return Wrap(
+                                spacing: 10.0,
+                                runSpacing: 10.0,
+                                children: List.generate(6, (index) {
+                                  return InkWell(
+                                    child: _categoriesName(
+                                      categoryName: categories[index],
+                                    ),
+                                    onTap: () {
+                                      bottomCubit.category();
+                                      Get.off(() => BookCategory(
+                                            category: categories[index],
+                                          ));
+                                    },
+                                  );
+                                }),
+                              );
+                            }
+                            return const Text("");
+                          },
                         ),
                       ],
                     ),
                     const SizedBox(
-                      height: 15,
+                      height: 35,
                     ),
                     // Row of similar books
-                    Row(
+                    const Row(
                       children: [
-                        const Text(
-                          "Similar Books",
+                        Text(
+                          "Popular Books",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 25,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Similar()),
-                              (Route<dynamic> route) => false,
-                            );
-                          },
-                          child: const Row(
-                            children: [
-                              Text(
-                                "See All",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(right: 8.0),
-                                child: Icon(Icons.arrow_forward_ios),
-                              ),
-                            ],
+                            color: darkGreen,
                           ),
                         ),
                       ],
@@ -176,40 +171,43 @@ class BookDescription extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          _buildContainer(),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _buildContainer(),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _buildContainer(),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _buildContainer(),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _buildContainer(),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _buildContainer(),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _buildContainer(),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                        ],
-                      ),
+                    BlocBuilder<HomeCubit, HomeState>(
+                      builder: (context, state) {
+                        if (state is HomeBooksLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (state is HomeBooksSuccess) {
+                          final books = state.data;
+                          return SizedBox(
+                            height: 240,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: books.length,
+                              itemBuilder: (context, index) => InkWell(
+                                child: _bookBuild(
+                                  bookImage: books[index]["imageUrl"],
+                                  bookName: books[index]["name"],
+                                  bookAuthor: books[index]["author"],
+                                  bookRate: books[index]["rate"],
+                                  context: context,
+                                ),
+                                onTap: () {
+                                  Get.offAll(BookDescription(
+                                    bookName: books[index]["name"],
+                                  ));
+                                },
+                              ),
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                width: 8,
+                              ),
+                            ),
+                          );
+                        }
+                        return const CircularProgressIndicator();
+                      },
                     ),
                     const SizedBox(
                       height: 20,
@@ -221,7 +219,7 @@ class BookDescription extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 25,
-                            color: Colors.black,
+                            color: darkGreen,
                           ),
                         ),
                       ],
@@ -304,21 +302,29 @@ class BookDescription extends StatelessWidget {
                     const SizedBox(
                       height: 20,
                     ),
-                    Container(
-                      height: 75,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(40),
-                          color: const Color(0xFF495346)),
-                      child: const Center(
-                          child: Text(
-                        "Buy Book",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white70,
-                        ),
-                      )),
+                    InkWell(
+                      child: Container(
+                        height: 60,
+                        width: width * .8,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40),
+                            color: const Color(0xFF495346)),
+                        child: const Center(
+                            child: Text(
+                          "Add to Library",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white70,
+                          ),
+                        )),
+                      ),
+                      onTap: () {
+                        libraryCubit.setLibrary(bookName, context);
+                        Future.delayed(const Duration(seconds: 1), () {
+                          Get.offAll(const Home());
+                        });
+                      },
                     ),
                     const SizedBox(
                       height: 20,
@@ -342,7 +348,7 @@ class BookDescription extends StatelessWidget {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
-            color: Colors.black,
+            color: darkGreen,
           ),
         ),
       ],
@@ -361,7 +367,7 @@ class BookDescription extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
-                color: Colors.black,
+                color: darkGreen,
               ),
             )
           ],
@@ -515,92 +521,125 @@ class BookDescription extends StatelessWidget {
     );
   }
 
-  Widget _buildContainer() {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        height: 290,
-        width: 250,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30), color: Colors.white),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
+  Widget _bookBuild({
+    required String bookImage,
+    required String bookName,
+    required String bookAuthor,
+    required String bookRate,
+    bool isPrice = false,
+    required BuildContext context,
+  }) {
+    return Container(
+      height: 240,
+      width: 200,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        color: Colors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(
+                30.0,
               ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30)),
-                child: Image.asset(
-                  "${path}book2.jpeg",
-                  height: 150,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+              topRight: Radius.circular(
+                30.0,
+              ),
+            ), // Same border radius as the container
+            child: SizedBox(
+              height: 130,
+              width: 200,
+              child: Image.network(
+                bookImage,
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0, left: 15.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  bookName,
+                  style: const TextStyle(
+                    overflow:
+                        TextOverflow.ellipsis, // Add ellipsis for overflow
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
-              ),
+                Text(
+                  bookAuthor,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    isPrice
+                        ? Text(
+                            "\$ $bookRate",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          )
+                        : Row(
+                            children: [
+                              const Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                bookRate,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                    const Spacer(),
+                  ],
+                )
+              ],
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "The Hunger",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.black),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "Patrick Mauriee",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.grey),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "4.5",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.black),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-Widget _buildHashtagChip(String hashtag) {
-  return Chip(
-    label: Text(
-      hashtag,
-      style: const TextStyle(),
+Widget _categoriesName({
+  required String categoryName,
+}) {
+  return Container(
+    padding: const EdgeInsets.all(10.0),
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.black),
+      borderRadius: BorderRadius.circular(30),
     ),
-    backgroundColor: const Color(0xFFF1EEE9),
-    labelStyle: const TextStyle(color: Colors.black),
+    child: Text(
+      ("# $categoryName"),
+      style: const TextStyle(
+        color: darkGreen,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
   );
 }

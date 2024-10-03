@@ -131,7 +131,7 @@ class ChangePasswordScreen extends StatelessWidget {
                               "Success", "Password updated successfully",
                               barBlur: 30);
                           Future.delayed(const Duration(seconds: 1), () {
-                            Get.off(Home());
+                            Get.off(const Home());
                           });
                         } on FirebaseAuthException catch (e) {
                           Get.snackbar(

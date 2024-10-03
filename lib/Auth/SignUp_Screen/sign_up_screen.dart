@@ -21,7 +21,6 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    FirebaseForm firebaseAuth = FirebaseForm();
     final cubit = context.read<TextFormCubit>();
 
     return Scaffold(

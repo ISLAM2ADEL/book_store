@@ -1,6 +1,7 @@
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
 import 'package:book_store/category%20screen/category.dart';
 import 'package:book_store/home%20screen/home.dart';
+import 'package:book_store/library%20screens/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,6 +74,7 @@ class CustomBottomBar extends StatelessWidget {
                   ),
                   onTap: () {
                     cubit.myLibrary();
+                    Get.off(() => const Library());
                   },
                 ),
               ],

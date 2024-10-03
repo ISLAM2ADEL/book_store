@@ -423,4 +423,110 @@ class FirebaseBook {
       print('No favorites found for this user.');
     }
   }
+
+  // Adds a new book to the user's library
+  Future<void> addUserLibraryBook(String newLibraryBook) async {
+    String? userEmail = FirebaseAuth.instance.currentUser?.email;
+
+    if (userEmail == null) {
+      print('User email is null. Cannot add to library.');
+      return;
+    }
+
+    CollectionReference userLibrary =
+        FirebaseFirestore.instance.collection('user_library');
+
+    DocumentReference userDoc = userLibrary.doc(userEmail);
+
+    DocumentSnapshot docSnapshot = await userDoc.get();
+
+    List<String> libraryBooks = [];
+    if (docSnapshot.exists && docSnapshot.data() != null) {
+      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+      if (data.containsKey('library')) {
+        libraryBooks = List<String>.from(data['library']);
+      }
+    }
+
+    if (!libraryBooks.contains(newLibraryBook)) {
+      libraryBooks.add(newLibraryBook); // Add the new book
+    }
+
+    await userDoc.set({
+      'library': libraryBooks,
+    }, SetOptions(merge: true));
+  }
+
+// Fetches the books in the user's library for the given user email
+  Future<List<String>> getLibraryBooks(String userEmail) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('user_library')
+        .doc(userEmail)
+        .get();
+
+    if (snapshot.exists) {
+      List<dynamic> library = snapshot.data()?['library'];
+      return library.cast<String>();
+    } else {
+      throw Exception('No library books found for this user.');
+    }
+  }
+
+// Fetches details of the library books for the given user email
+  Future<List<Map<String, dynamic>>> fetchLibraryBookDetails(
+      String userEmail) async {
+    try {
+      // Step 1: Get the library books
+      List<String> libraryBooks = await getLibraryBooks(userEmail);
+
+      List<Map<String, dynamic>> bookDetailsList = [];
+
+      // Step 2: Get details for each library book
+      for (String book in libraryBooks) {
+        Map<String, dynamic> bookDetails = await getBookDetails(book);
+        bookDetailsList.add(bookDetails);
+      }
+
+      return bookDetailsList;
+    } catch (e) {
+      print('Error fetching library book details: $e');
+      return []; // Return an empty list in case of error
+    }
+  }
+
+  Future<void> deleteUserLibraryBook(String bookToRemove) async {
+    String? userEmail = FirebaseAuth.instance.currentUser?.email;
+
+    if (userEmail == null) {
+      print('User email is null. Cannot remove book from library.');
+      return;
+    }
+
+    CollectionReference userLibrary =
+        FirebaseFirestore.instance.collection('user_library');
+
+    DocumentReference userDoc = userLibrary.doc(userEmail);
+
+    DocumentSnapshot docSnapshot = await userDoc.get();
+
+    if (docSnapshot.exists && docSnapshot.data() != null) {
+      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+      if (data.containsKey('library')) {
+        List<String> libraryBooks = List<String>.from(data['library']);
+
+        if (libraryBooks.contains(bookToRemove)) {
+          libraryBooks.remove(bookToRemove); // Remove the book
+
+          // Update Firestore with the new list of library books
+          await userDoc.set({
+            'library': libraryBooks,
+          }, SetOptions(merge: true));
+        } else {
+          print('Book not found in library.');
+        }
+      }
+    } else {
+      print('No library books found for this user.');
+    }
+  }
 }

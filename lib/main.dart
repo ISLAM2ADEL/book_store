@@ -9,6 +9,7 @@ import 'package:book_store/book%20space%20cubit/form%20cubit/text_form_cubit.dar
 import 'package:book_store/book%20space%20cubit/home%20cubit/best%20seller%20cubit/best_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
+import 'package:book_store/book%20space%20cubit/library%20cubit/library_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -93,6 +94,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => DashCubit(),
+        ),
+        BlocProvider(
+          create: (context) => LibraryCubit(),
         ),
       ],
       child: const GetMaterialApp(

@@ -110,8 +110,18 @@ class LoginScreen extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 10),
-
-                    const SizedBox(height: 50),
+                    TextButton(
+                      onPressed: () {
+                        firebaseAuth.forgetPassword(emailController.text);
+                      },
+                      child: const Text(
+                        "Forget password?",
+                        style: TextStyle(
+                          color: Color(0xFF8D8D8D),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
 
                     // Login Button
                     Center(
