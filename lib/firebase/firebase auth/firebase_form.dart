@@ -1,14 +1,14 @@
-import 'package:book_store/Auth/LogIn_Screen/login_screen.dart';
-import 'package:book_store/Auth/onboarding_screen.dart';
-import 'package:book_store/admin%20screens/add%20book/add_book.dart';
 import 'package:book_store/const.dart';
-import 'package:book_store/home%20screen/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../admin screens/admin const.dart';
+import '../../screens/Auth/LogIn_Screen/login_screen.dart';
+import '../../screens/Auth/onboarding_screen.dart';
+import '../../screens/admin screens/add book/add_book.dart';
+import '../../screens/admin screens/admin const.dart';
+import '../../screens/home screen/home.dart';
 
 class FirebaseForm {
   Future<void> registerUser(
@@ -26,7 +26,8 @@ class FirebaseForm {
         backgroundColor: darkGreen,
         colorText: Colors.white,
       );
-      Get.to(LoginScreen());
+      Get.to(LoginScreen(),
+          transition: Transition.native, duration: const Duration(seconds: 1));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         Get.snackbar(
@@ -60,7 +61,9 @@ class FirebaseForm {
       final credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: emailAddress, password: password);
       if (FirebaseAuth.instance.currentUser!.emailVerified) {
-        Get.offAll(emailAddress == adminEmail ? AddBook() : const Home());
+        Get.offAll(emailAddress == adminEmail ? AddBook() : const Home(),
+            transition: Transition.native,
+            duration: const Duration(seconds: 1));
       } else {
         FirebaseAuth.instance.currentUser!.sendEmailVerification();
         Get.snackbar(

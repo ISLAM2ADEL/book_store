@@ -1,5 +1,3 @@
-import 'package:book_store/Auth/forget_screen/Cubit/forget_cubit.dart';
-import 'package:book_store/Auth/splash_screen.dart';
 import 'package:book_store/book%20space%20cubit/admin%20cubit/bottom%20bar/admin_bar_cubit.dart';
 import 'package:book_store/book%20space%20cubit/admin%20cubit/edit%20book/edit_cubit.dart';
 import 'package:book_store/book%20space%20cubit/awesome%20cubit/awesome_cubit.dart';
@@ -11,8 +9,11 @@ import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/ca
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:book_store/book%20space%20cubit/library%20cubit/library_cubit.dart';
 import 'package:book_store/cubit/settings_cubit.dart';
+import 'package:book_store/screens/Auth/forget_screen/Cubit/forget_cubit.dart';
+import 'package:book_store/screens/Auth/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -53,6 +54,10 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MultiBlocProvider(
       providers: [
         BlocProvider(

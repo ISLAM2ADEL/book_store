@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../screens/settings_screen.dart';
+import '../screens/setting screen/settings_screen.dart';
 
 part 'settings_state.dart';
 
