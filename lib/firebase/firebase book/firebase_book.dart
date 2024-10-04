@@ -529,4 +529,12 @@ class FirebaseBook {
       print('No library books found for this user.');
     }
   }
+
+  Future<List<QueryDocumentSnapshot>> getRecent() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .where('category', isEqualTo: 'Recent')
+        .get();
+    return querySnapshot.docs;
+  }
 }

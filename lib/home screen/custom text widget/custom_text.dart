@@ -5,6 +5,7 @@ import '../../book space cubit/authors cubit/author_cubit.dart';
 import '../../book space cubit/bottom cubit/bottom_cubit.dart';
 import '../../category screen/category.dart';
 import '../../const.dart';
+import '../../recent screen/recent.dart';
 
 class CustomText extends StatelessWidget {
   final String text;
@@ -61,6 +62,9 @@ class CustomText extends StatelessWidget {
             }
             if (text == "Explore Authors") {
               authorCubit.expandAuthors();
+            }
+            if (text == "Recent Books") {
+              Get.to(const Recent());
             }
           },
         )

@@ -17,6 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import '../book space cubit/recent cubit/recent_cubit.dart';
 import '../screens/settings_screen.dart';
 
 class Home extends StatelessWidget {
@@ -33,6 +34,8 @@ class Home extends StatelessWidget {
     final categoryCubit = context.read<CategoryCubit>();
     final favouriteCubit = context.read<FavouriteCubit>();
     final settingCubit = context.read<SettingsCubit>();
+    final recentCubit = context.read<RecentCubit>();
+    recentCubit.getRecent();
     homeCubit.getBooksMostPopular();
     bestCubit.getBooksBestSeller();
     categoryCubit.getCategories();
@@ -113,34 +116,32 @@ class Home extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30.0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      _recentBooks(
-                        bookImage: "hamlet.png",
-                        bookText: "Hamlet",
-                        bookRemaining: "16 h 45 min",
-                        height: height,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      _recentBooks(
-                        bookImage: "the island.png",
-                        bookText: "The island",
-                        bookRemaining: "16 h 45 min",
-                        height: height,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      _recentBooks(
-                        bookImage: "hunger.png",
-                        bookText: "Hunger",
-                        bookRemaining: "16 h 45 min",
-                        height: height,
-                      ),
-                    ],
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: BlocBuilder<RecentCubit, RecentState>(
+                    builder: (context, state) {
+                      if (state is RecentLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (state is RecentSuccess) {
+                        final recent = state.data;
+                        return ListView.separated(
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: 3,
+                          itemBuilder: (context, index) => _recentBooks(
+                            bookImage: recent[index]['imageUrl'],
+                            bookText: recent[index]['name'],
+                            bookRemaining: "16 h 45 min",
+                            height: height,
+                          ),
+                          separatorBuilder: (context, index) => const SizedBox(
+                            height: 20,
+                          ),
+                        );
+                      }
+                      return const Text("");
+                    },
                   ),
                 ),
               ),
@@ -585,27 +586,31 @@ class Home extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: 120,
+          width: 160,
           child: Row(
             children: [
               SizedBox(
                 height: height * .063,
                 width: 50,
-                child: Image.asset("$path$bookImage"),
+                child: Image.network(bookImage),
               ),
-              Text(
-                bookText,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+              SizedBox(
+                width: 110,
+                child: Text(
+                  bookText,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ],
           ),
         ),
         const SizedBox(
-          width: 35,
+          width: 3,
         ),
         Column(
           children: [

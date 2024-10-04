@@ -20,6 +20,7 @@ import 'book space cubit/admin cubit/add book/image_cubit.dart';
 import 'book space cubit/admin cubit/dashboard cubit/dash_cubit.dart';
 import 'book space cubit/authors cubit/author_cubit.dart';
 import 'book space cubit/favourite cubit/favourite_cubit.dart';
+import 'book space cubit/recent cubit/recent_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,6 +102,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => SettingsCubit(),
+        ),
+        BlocProvider(
+          create: (context) => RecentCubit(),
         ),
       ],
       child: const GetMaterialApp(
