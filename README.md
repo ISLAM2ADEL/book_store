@@ -1,10 +1,10 @@
-# book_store
+# Book Space
 
-A new Flutter project.
+Flutter Graduation project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is talking about book store application allow admin to add, edit and delete books and user can acces them to show the description and add them to favorites or library
 
 A few resources to get you started if this is your first Flutter project:
 
