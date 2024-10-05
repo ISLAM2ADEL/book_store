@@ -50,10 +50,10 @@ class CustomBottomBar extends StatelessWidget {
                       myChoice == Bar.favourite ? Colors.black : Colors.grey,
                 ),
                 onTap: () {
+                  cubit.favourite();
                   Get.Get.off(() => const Favorite(),
                       transition: Get.Transition.noTransition,
                       duration: const Duration(seconds: 1));
-                  cubit.favourite();
                 },
               ),
               InkWell(

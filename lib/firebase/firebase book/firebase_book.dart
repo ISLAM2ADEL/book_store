@@ -364,6 +364,15 @@ class FirebaseBook {
     return documentCount;
   }
 
+  Future<int> getRecentBookCount() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('books')
+        .where('category', isEqualTo: 'Recent')
+        .get();
+    int documentCount = querySnapshot.docs.length;
+    return documentCount;
+  }
+
   Future<int> getCategoriesCount() async {
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('books').get();

@@ -56,8 +56,8 @@ class Favorite extends StatelessWidget {
                 Get.Get.snackbar(
                   "Favorite is Empty",
                   "Nothing found in Favorite Section",
-                  backgroundColor: Colors.red,
-                  colorText: Colors.white,
+                  backgroundColor: Colors.white,
+                  colorText: Colors.black,
                 );
               });
             });

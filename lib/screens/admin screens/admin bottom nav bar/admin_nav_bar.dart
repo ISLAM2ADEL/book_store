@@ -72,6 +72,7 @@ class AdminNavBar extends StatelessWidget {
                       dashCubit.getFreeBooks();
                       dashCubit.getAuthors();
                       dashCubit.getCategories();
+                      dashCubit.getRecentBooks();
                       Get.off(() => const Dashboard());
                     },
                   ),

@@ -56,6 +56,13 @@ class Dashboard extends StatelessWidget {
                   totalBooks: bookStore,
                 ),
                 _percentageIndicator(
+                  text: "Number of recent books in Book Space:",
+                  colors: Colors.tealAccent,
+                  number: cubit.recentBookCounters().toString(),
+                  percentage: cubit.recentBookCounters(),
+                  totalBooks: bookStore,
+                ),
+                _percentageIndicator(
                   text: "Number of categories in Book Space:",
                   colors: Colors.red,
                   number: cubit.categoryCounters().toString(),
