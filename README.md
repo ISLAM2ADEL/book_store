@@ -6,11 +6,8 @@ Flutter Graduation project.
 
 This project is talking about book store application allow admin to add, edit and delete books and user can acces them to show the description and add them to favorites or library
 
-A few resources to get you started if this is your first Flutter project:
+Project UI taken from Behance:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [Behance UI design Link](https://www.behance.net/gallery/204801367/Book-Store-App?tracking_source=search_projects|book+store+app&l=0)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
