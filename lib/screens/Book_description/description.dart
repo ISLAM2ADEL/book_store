@@ -358,7 +358,7 @@ class BookDescription extends StatelessWidget {
                       onTap: () {
                         libraryCubit.setLibrary(bookName, context);
                         Future.delayed(const Duration(seconds: 1), () {
-                          Get.Get.offAll(const Home(),
+                          Get.Get.offAll(const Library(),
                               transition: Get.Transition.circularReveal,
                               duration: const Duration(seconds: 1));
                         });
