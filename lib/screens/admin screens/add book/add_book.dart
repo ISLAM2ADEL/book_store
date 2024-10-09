@@ -328,7 +328,7 @@ class AddBook extends StatelessWidget {
                   rate: rateController.text,
                 );
                 Get.offAll(AddBook());
-                Future.delayed(const Duration(seconds: 1), () {
+                Future.delayed(const Duration(seconds: 3), () {
                   cubit.setCategory("e.g. Adventure");
                 });
               } else {
