@@ -48,8 +48,8 @@ class LibraryCubit extends Cubit<LibraryState> {
     try {
       await firebaseBook.deleteUserLibraryBook(bookName);
       Get.snackbar(
-        "Removed from Favorite",
-        "Book is Removed from Favorite Section",
+        "Removed from Library",
+        "Book is Removed from Library Section",
         colorText: Colors.white,
         backgroundColor: Colors.green,
       );
