@@ -2,6 +2,8 @@ import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart
 import 'package:book_store/book%20space%20cubit/description%20Cubit/description_cubit.dart';
 import 'package:book_store/book%20space%20cubit/library%20cubit/library_cubit.dart';
 import 'package:book_store/const.dart';
+import 'package:book_store/screens/home%20screen/alphabetic_books.dart';
+import 'package:book_store/screens/home%20screen/view_books.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart' as Get;
@@ -54,6 +56,14 @@ class BookDescription extends StatelessWidget {
                   duration: const Duration(seconds: 1));
             } else if (page == "SearchScreen") {
               Get.Get.off(const SearchScreen(),
+                  transition: Get.Transition.circularReveal,
+                  duration: const Duration(seconds: 1));
+            } else if (page == "ViewBooks") {
+              Get.Get.off(const ViewBooks(),
+                  transition: Get.Transition.circularReveal,
+                  duration: const Duration(seconds: 1));
+            } else if (page == "AlphabeticBooks") {
+              Get.Get.off(const AlphabeticBooks(),
                   transition: Get.Transition.circularReveal,
                   duration: const Duration(seconds: 1));
             } else {

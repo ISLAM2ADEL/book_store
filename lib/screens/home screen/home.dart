@@ -7,6 +7,8 @@ import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/ca
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/cubit/settings_cubit.dart';
+import 'package:book_store/screens/home%20screen/alphabetic_books.dart';
+import 'package:book_store/screens/home%20screen/view_books.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +85,7 @@ class Home extends StatelessWidget {
                         return Wrap(
                           spacing: 10.0,
                           runSpacing: 10.0,
-                          children: List.generate(6, (index) {
+                          children: List.generate(7, (index) {
                             return InkWell(
                               child: _categoriesName(
                                 categoryName: categories[index],
@@ -115,7 +117,7 @@ class Home extends StatelessWidget {
                 height: 20,
               ),
               Container(
-                height: height * .30,
+                height: height * .31,
                 width: width * .9,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -195,6 +197,7 @@ class Home extends StatelessWidget {
                           ),
                           onTap: () {
                             homeCubit.forYou();
+                            Get.Get.off(const ViewBooks());
                           },
                         ),
                       ],
@@ -278,6 +281,23 @@ class Home extends StatelessWidget {
                         ),
                         InkWell(
                           child: _bookType(
+                            text: "Free",
+                            containerColor: myBook == Book.free
+                                ? darkGreen
+                                : Colors.transparent,
+                            textColor:
+                                myBook == Book.free ? Colors.white : darkGreen,
+                            border: myBook == Book.free ? false : true,
+                          ),
+                          onTap: () {
+                            bestCubit.freeBooks();
+                          },
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                          child: _bookType(
                             text: "Alphabetic",
                             containerColor: myBook == Book.alphabetic
                                 ? darkGreen
@@ -289,23 +309,7 @@ class Home extends StatelessWidget {
                           ),
                           onTap: () {
                             bestCubit.alphabetic();
-                          },
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        InkWell(
-                          child: _bookType(
-                            text: "Free",
-                            containerColor: myBook == Book.free
-                                ? darkGreen
-                                : Colors.transparent,
-                            textColor:
-                                myBook == Book.free ? Colors.white : darkGreen,
-                            border: myBook == Book.free ? false : true,
-                          ),
-                          onTap: () {
-                            bestCubit.freeBooks();
+                            Get.Get.off(const AlphabeticBooks());
                           },
                         ),
                       ],
