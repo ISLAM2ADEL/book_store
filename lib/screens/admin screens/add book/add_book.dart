@@ -1,18 +1,19 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:icons_plus/icons_plus.dart';
 import '../../../book space cubit/admin cubit/add book/image_cubit.dart';
 import '../../../const.dart';
 import '../../Auth/custom widget/custom_text_form.dart';
 import '../admin app bar/admin_app_bar.dart';
 import '../admin bottom nav bar/admin_nav_bar.dart';
+import 'category_dialog.dart';
 
 class AddBook extends StatelessWidget {
   AddBook({super.key});
   final TextEditingController bookController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController authorController = TextEditingController();
-  final TextEditingController categoryController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController rateController = TextEditingController();
   final GlobalKey<FormState> addBookFormKey = GlobalKey<FormState>();
@@ -22,7 +23,6 @@ class AddBook extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final cubit = context.read<ImageCubit>();
-
     return Scaffold(
       backgroundColor: white,
       bottomNavigationBar: const AdminNavBar(),
@@ -67,7 +67,7 @@ class AddBook extends StatelessWidget {
                   );
                 }
 
-                return _buildFormContent(cubit, width);
+                return _buildFormContent(cubit, width, context);
               },
             ),
           ),
@@ -76,12 +76,14 @@ class AddBook extends StatelessWidget {
     );
   }
 
-  Widget _buildFormContent(ImageCubit cubit, double width) {
+  Widget _buildFormContent(
+      ImageCubit cubit, double width, BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _formBuild(
-          text: "Add Book Name :",
-          hintText: "Book Name",
+          text: "Book Name",
+          hintText: "e.g. One Piece",
           icons: Icons.book,
           controller: bookController,
           validator: (val) {
@@ -93,8 +95,8 @@ class AddBook extends StatelessWidget {
         ),
         const SizedBox(height: 15),
         _formBuild(
-          text: "Add Book Description :",
-          hintText: "Book Description",
+          text: "Book Description",
+          hintText: "e.g. The King of Pirates Story",
           icons: Icons.description,
           controller: descriptionController,
           validator: (val) {
@@ -106,8 +108,8 @@ class AddBook extends StatelessWidget {
         ),
         const SizedBox(height: 15),
         _formBuild(
-          text: "Add Book Author :",
-          hintText: "Author's name",
+          text: "Book Author",
+          hintText: "e.g. Ichiro Uda",
           icons: Icons.drive_file_rename_outline,
           controller: authorController,
           validator: (val) {
@@ -118,24 +120,117 @@ class AddBook extends StatelessWidget {
           },
         ),
         const SizedBox(height: 15),
-        _formBuild(
-          text: "Add Book Category :",
-          hintText: "Book Category",
-          icons: Icons.category,
-          controller: categoryController,
-          validator: (val) {
-            if (val!.isEmpty) {
-              return "This field can not be empty";
-            }
-            return null;
+        const Row(
+          children: [
+            Text(
+              "Book Category",
+              style: TextStyle(
+                  color: darkGreen, fontWeight: FontWeight.bold, fontSize: 17),
+            ),
+            Text(
+              " *",
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 22,
+              ),
+            )
+          ],
+        ),
+        const SizedBox(
+          height: 13,
+        ),
+        InkWell(
+          child: BlocBuilder<ImageCubit, ImageState>(
+            builder: (context, state) {
+              if (state is ImageCategoryError) {
+                return Container(
+                  height: 45,
+                  width: width,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(30.0),
+                    border: Border.all(color: Colors.red),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          BoxIcons.bx_category,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          cubit.getCategory(),
+                          style: const TextStyle(
+                            color: Color(0xFF8D8D8D),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 17,
+                          ),
+                        ),
+                        const Spacer(),
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.grey,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              return Container(
+                height: 45,
+                width: width,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(30.0),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        BoxIcons.bx_category,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        cubit.getCategory(),
+                        style: const TextStyle(
+                          color: Color(0xFF8D8D8D),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 17,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.grey,
+                        size: 18,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+          onTap: () {
+            Get.to(const CategoryDialog());
           },
         ),
         const SizedBox(height: 15),
         _formBuild(
-          text: "Add Book Price :",
-          hintText: "Book Price",
+          text: "Book Price",
+          hintText: "e.g. 14.99",
           icons: Icons.attach_money,
           controller: priceController,
+          phone: true,
           validator: (val) {
             if (val!.isEmpty) {
               return "This field can not be empty";
@@ -145,8 +240,8 @@ class AddBook extends StatelessWidget {
         ),
         const SizedBox(height: 15),
         _formBuild(
-          text: "Add Book Rate :",
-          hintText: "Book Rate",
+          text: "Book Rate",
+          hintText: "e.g. 4.7",
           icons: Icons.star_rate,
           controller: rateController,
           phone: true,
@@ -159,7 +254,7 @@ class AddBook extends StatelessWidget {
         ),
         const SizedBox(height: 15),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             const Text(
               "Add Book Image :",
@@ -170,24 +265,28 @@ class AddBook extends StatelessWidget {
               ),
             ),
             InkWell(
-              child: Container(
-                height: 50,
-                width: width * .5,
-                decoration: BoxDecoration(
-                  color: white,
-                  borderRadius: BorderRadius.circular(30.0),
-                  border: Border.all(color: darkGreen, width: 2.0),
-                ),
-                child: const Center(
-                  child: Text(
-                    "Upload Image",
-                    style: TextStyle(
-                      color: darkGreen,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+              child: BlocBuilder<ImageCubit, ImageState>(
+                builder: (context, state) {
+                  return Container(
+                    height: 38,
+                    width: width * .45,
+                    decoration: BoxDecoration(
+                      color: white,
+                      borderRadius: BorderRadius.circular(30.0),
+                      border: Border.all(color: darkGreen, width: 2.0),
                     ),
-                  ),
-                ),
+                    child: const Center(
+                      child: Text(
+                        "Upload Image",
+                        style: TextStyle(
+                          color: darkGreen,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
               onTap: () async {
                 await cubit.uploadImage();
@@ -198,8 +297,8 @@ class AddBook extends StatelessWidget {
         const SizedBox(height: 20),
         InkWell(
           child: Container(
-            width: width * .85,
-            height: 65,
+            width: width * .8,
+            height: 50,
             decoration: BoxDecoration(
               color: darkGreen,
               borderRadius: BorderRadius.circular(30.0),
@@ -216,18 +315,22 @@ class AddBook extends StatelessWidget {
             ),
           ),
           onTap: () async {
-            if (addBookFormKey.currentState!.validate()) {
+            if (addBookFormKey.currentState!.validate() &&
+                cubit.getCategory() != "e.g. Adventure") {
               bool isPicked = cubit.getIsPicked();
               if (isPicked) {
                 cubit.addBook(
                   bookName: bookController.text,
                   description: descriptionController.text,
                   author: authorController.text,
-                  category: categoryController.text,
+                  category: cubit.getCategory(),
                   price: priceController.text,
                   rate: rateController.text,
                 );
                 Get.offAll(AddBook());
+                Future.delayed(const Duration(seconds: 1), () {
+                  cubit.setCategory("e.g. Adventure");
+                });
               } else {
                 Get.snackbar(
                   "Image not found",
@@ -236,6 +339,14 @@ class AddBook extends StatelessWidget {
                   backgroundColor: Colors.red,
                 );
               }
+            } else {
+              cubit.categoryError();
+              Get.snackbar(
+                "Fields Empty",
+                "Please Fill All Fields",
+                colorText: Colors.white,
+                backgroundColor: Colors.red,
+              );
             }
           },
         ),
@@ -255,13 +366,21 @@ class AddBook extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          text,
-          style: const TextStyle(
-            color: darkGreen,
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-          ),
+        Row(
+          children: [
+            Text(
+              text,
+              style: const TextStyle(
+                color: darkGreen,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Text(
+              " *",
+              style: TextStyle(color: Colors.red, fontSize: 22),
+            )
+          ],
         ),
         const SizedBox(height: 13),
         CustomTextForm(

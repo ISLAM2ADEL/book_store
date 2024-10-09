@@ -5,6 +5,12 @@ sealed class ImageState {}
 
 final class ImageInitial extends ImageState {}
 
+final class ImageCategoryChanged extends ImageState {}
+
+final class ImageUploadingError extends ImageState {}
+
+final class ImageCategoryError extends ImageState {}
+
 final class ImageUpload extends ImageState {}
 
 final class ImageLoading extends ImageState {}

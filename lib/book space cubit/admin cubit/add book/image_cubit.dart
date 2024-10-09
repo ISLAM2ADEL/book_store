@@ -10,6 +10,8 @@ class ImageCubit extends Cubit<ImageState> {
   bool isImage = false;
   bool isPicked = false;
   bool isUpdated = false;
+  String selectedCategory = "e.g adventure";
+
   FirebaseBook firebaseBook = FirebaseBook();
 
   Future<void> uploadImage() async {
@@ -89,5 +91,22 @@ class ImageCubit extends Cubit<ImageState> {
     } catch (e) {
       emit(ImageUpdateFailure(message: e.toString()));
     }
+  }
+
+  String getCategory() {
+    return selectedCategory;
+  }
+
+  void setCategory(String category) {
+    selectedCategory = category;
+    emit(ImageCategoryChanged());
+  }
+
+  void categoryError() {
+    emit(ImageCategoryError());
+  }
+
+  void imageError() {
+    emit(ImageUploadingError());
   }
 }

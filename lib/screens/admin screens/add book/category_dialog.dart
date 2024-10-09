@@ -1,24 +1,24 @@
-import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
-import 'package:book_store/const.dart';
+import 'package:book_store/book%20space%20cubit/admin%20cubit/add%20book/image_cubit.dart';
+import 'package:book_store/screens/admin%20screens/add%20book/add_book.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart' as Get;
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
-import '../custom bottom bar/custom_bottom_bar.dart';
-import 'book_category.dart';
+import '../../../book space cubit/home cubit/category cubit/category_cubit.dart';
+import '../../../const.dart';
 
-class Category extends StatelessWidget {
-  const Category({super.key});
+class CategoryDialog extends StatelessWidget {
+  const CategoryDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const page = "Category";
     final categoryCubit = context.read<CategoryCubit>();
+    final imageCubit = context.read<ImageCubit>();
     categoryCubit.getCategories();
     return Scaffold(
       backgroundColor: white,
       appBar: _categoryAppBar(context: context),
-      bottomNavigationBar: const CustomBottomBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -38,14 +38,8 @@ class Category extends StatelessWidget {
                     return InkWell(
                       child: _categoriesName(categoryName: categories[index]),
                       onTap: () {
-                        categoryCubit.getBooks(categories[index]);
-                        Get.Get.off(
-                            () => BookCategory(
-                                  category: categories[index],
-                                  page: page,
-                                ),
-                            transition: Get.Transition.circularReveal,
-                            duration: const Duration(seconds: 1));
+                        imageCubit.setCategory(categories[index]);
+                        Navigator.pop(context);
                       },
                     );
                   }),
@@ -64,6 +58,15 @@ class Category extends StatelessWidget {
   }) {
     return AppBar(
       backgroundColor: white,
+      leading: InkWell(
+        child: const Icon(
+          Icons.arrow_back_ios_new,
+          color: darkGreen,
+        ),
+        onTap: () {
+          Navigator.pop(context);
+        },
+      ),
       title: const Text(
         "Categories",
         style: TextStyle(
