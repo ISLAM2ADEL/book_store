@@ -41,16 +41,17 @@ class BookDescription extends StatelessWidget {
           ),
           onTap: () {
             bottomCubit.home();
-
             if (page == "Home") {
               Get.Get.off(const Home(),
                   transition: Get.Transition.circularReveal,
                   duration: const Duration(seconds: 1));
             } else if (page == "Favorite") {
+              bottomCubit.favourite();
               Get.Get.off(const Favorite(),
                   transition: Get.Transition.circularReveal,
                   duration: const Duration(seconds: 1));
             } else if (page == "Library") {
+              bottomCubit.myLibrary();
               Get.Get.off(const Library(),
                   transition: Get.Transition.circularReveal,
                   duration: const Duration(seconds: 1));
@@ -67,6 +68,7 @@ class BookDescription extends StatelessWidget {
                   transition: Get.Transition.circularReveal,
                   duration: const Duration(seconds: 1));
             } else {
+              bottomCubit.category();
               Get.Get.off(const Category(),
                   transition: Get.Transition.circularReveal,
                   duration: const Duration(seconds: 1));
@@ -366,6 +368,7 @@ class BookDescription extends StatelessWidget {
                         )),
                       ),
                       onTap: () {
+                        bottomCubit.myLibrary();
                         libraryCubit.setLibrary(bookName, context);
                         Future.delayed(const Duration(seconds: 1), () {
                           Get.Get.offAll(const Library(),

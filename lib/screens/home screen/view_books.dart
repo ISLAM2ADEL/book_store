@@ -2,6 +2,7 @@ import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart' as Get;
+import '../../book space cubit/home cubit/best seller cubit/best_cubit.dart';
 import '../../const.dart';
 import '../Book_description/description.dart';
 import 'home.dart';
@@ -14,7 +15,7 @@ class ViewBooks extends StatelessWidget {
     String page = "ViewBooks";
     return Scaffold(
       backgroundColor: white,
-      appBar: _recentAppBar(),
+      appBar: _recentAppBar(context),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           if (state is HomeBooksLoading) {
@@ -52,7 +53,9 @@ class ViewBooks extends StatelessWidget {
   }
 }
 
-AppBar _recentAppBar() {
+AppBar _recentAppBar(BuildContext context) {
+  final homeCubit = context.read<HomeCubit>();
+  final bestCubit = context.read<BestCubit>();
   return AppBar(
     backgroundColor: white,
     leading: InkWell(
@@ -62,6 +65,8 @@ AppBar _recentAppBar() {
         size: 26,
       ),
       onTap: () {
+        homeCubit.mostPopular();
+        bestCubit.bestSeller();
         Get.Get.off(() => const Home(),
             transition: Get.Transition.circularReveal,
             duration: const Duration(seconds: 1));

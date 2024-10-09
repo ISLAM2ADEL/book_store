@@ -1,4 +1,6 @@
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
+import 'package:book_store/book%20space%20cubit/home%20cubit/best%20seller%20cubit/best_cubit.dart';
+import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart' as Get;
@@ -15,6 +17,8 @@ class CustomBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<BottomCubit>();
+    final homeCubit = context.read<HomeCubit>();
+    final bestCubit = context.read<BestCubit>();
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
       height: 70,
@@ -37,6 +41,8 @@ class CustomBottomBar extends StatelessWidget {
                 ),
                 onTap: () {
                   cubit.home();
+                  homeCubit.mostPopular();
+                  bestCubit.bestSeller();
                   Get.Get.off(() => const Home(),
                       transition: Get.Transition.noTransition,
                       duration: const Duration(seconds: 1));

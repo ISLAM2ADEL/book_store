@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
 import 'package:book_store/const.dart';
 import 'package:book_store/cubit/settings_cubit.dart';
 import 'package:flutter/material.dart';
@@ -217,6 +218,7 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _buildSettingsSection(
       BuildContext context, FirebaseForm firebase, double height) {
+    final cubit = context.read<BottomCubit>();
     return Column(
       children: [
         InkWell(
@@ -225,6 +227,7 @@ class SettingsScreen extends StatelessWidget {
               text: "Library",
               context: context),
           onTap: () {
+            cubit.myLibrary();
             Get.Get.off(const Library(),
                 transition: Get.Transition.circularReveal,
                 duration: const Duration(seconds: 1));
@@ -237,6 +240,7 @@ class SettingsScreen extends StatelessWidget {
           child: _models(
               icons: Bootstrap.heart, text: "Favorites", context: context),
           onTap: () {
+            cubit.favourite();
             Get.Get.off(const Favorite(),
                 transition: Get.Transition.circularReveal,
                 duration: const Duration(seconds: 1));
