@@ -1,12 +1,11 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:book_store/firebase/firebasr%20profile/firebase_profile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../screens/setting screen/settings_screen.dart';
+import '../../screens/setting screen/settings_screen.dart';
 
 part 'settings_state.dart';
 

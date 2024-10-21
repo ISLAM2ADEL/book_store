@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
 import 'package:book_store/const.dart';
-import 'package:book_store/cubit/settings_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart' as Get;
 import 'package:icons_plus/icons_plus.dart';
+import '../../book space cubit/cubit/settings_cubit.dart';
 import '../../firebase/firebase auth/firebase_form.dart';
 import '../Auth/Change_Password_Screen/change_password_screen.dart';
 import '../favourite screen/favorite.dart';

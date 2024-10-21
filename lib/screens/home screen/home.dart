@@ -6,7 +6,6 @@ import 'package:book_store/book%20space%20cubit/home%20cubit/best%20seller%20cub
 import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:book_store/const.dart';
-import 'package:book_store/cubit/settings_cubit.dart';
 import 'package:book_store/screens/home%20screen/alphabetic_books.dart';
 import 'package:book_store/screens/home%20screen/view_books.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart' as Get;
 
+import '../../book space cubit/cubit/settings_cubit.dart';
 import '../../book space cubit/recent cubit/recent_cubit.dart';
 import '../Book_description/description.dart';
 import '../category screen/book_category.dart';

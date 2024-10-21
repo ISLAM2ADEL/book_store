@@ -43,7 +43,7 @@ class _SplashscreenState extends State<Splashscreen> {
               height: 250,
               width: 250,
               child: Image.asset(
-                "${imagePath}images_processed.jpeg",
+                "${path}images_processed.jpeg",
               ),
             ), // Correct path to the image
           ),

@@ -8,7 +8,6 @@ import 'package:book_store/book%20space%20cubit/home%20cubit/best%20seller%20cub
 import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/home_cubit.dart';
 import 'package:book_store/book%20space%20cubit/library%20cubit/library_cubit.dart';
-import 'package:book_store/cubit/settings_cubit.dart';
 import 'package:book_store/screens/Auth/forget_screen/Cubit/forget_cubit.dart';
 import 'package:book_store/screens/Auth/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,6 +19,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'book space cubit/admin cubit/add book/image_cubit.dart';
 import 'book space cubit/admin cubit/dashboard cubit/dash_cubit.dart';
 import 'book space cubit/authors cubit/author_cubit.dart';
+import 'book space cubit/cubit/settings_cubit.dart';
 import 'book space cubit/favourite cubit/favourite_cubit.dart';
 import 'book space cubit/recent cubit/recent_cubit.dart';
 
