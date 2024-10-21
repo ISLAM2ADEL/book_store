@@ -28,6 +28,8 @@ class BookDescription extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final bottomCubit = context.read<BottomCubit>();
+    final categoryCubit = context.read<CategoryCubit>();
+    categoryCubit.getCategories();
     final descriptionCubit = context.read<DescriptionCubit>();
     descriptionCubit.getDescription(bookName);
     final libraryCubit = context.read<LibraryCubit>();
