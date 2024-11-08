@@ -45,7 +45,8 @@ class Library extends StatelessWidget {
                     bookImage: data[index]['imageUrl'],
                     bookName: data[index]['name'],
                     bookAuthor: data[index]['author'],
-                    bookRate: data[index]['rate'],
+                    bookRate: data[index]['price'],
+                    isPrice: true,
                     context: context),
               ),
             );
@@ -172,7 +173,7 @@ Widget _bookBuild({
                   children: [
                     isPrice
                         ? Text(
-                            "\$ $bookRate",
+                            bookRate == "0" ? "\$ Free" : "\$ $bookRate",
                             style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,

@@ -128,6 +128,7 @@ class EditBookPage extends StatelessWidget {
           text: "Update Book Description :",
           hintText: "Book Description",
           icons: Icons.description,
+          isMax: true,
           controller: descriptionController,
           validator: (val) {
             if (val!.isEmpty) {
@@ -165,6 +166,7 @@ class EditBookPage extends StatelessWidget {
         const SizedBox(height: 15),
         _formBuild(
           text: "Update Book Price :",
+          isPhone: true,
           hintText: "Book Price",
           icons: Icons.attach_money,
           controller: priceController,
@@ -178,6 +180,7 @@ class EditBookPage extends StatelessWidget {
         const SizedBox(height: 15),
         _formBuild(
           text: "Update Book Rate :",
+          isPhone: true,
           hintText: "Book Rate",
           icons: Icons.star_rate,
           controller: rateController,
@@ -234,6 +237,8 @@ class EditBookPage extends StatelessWidget {
     required TextEditingController controller,
     required String? Function(String?)? validator,
     bool check = false,
+    bool isMax = false,
+    bool isPhone = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,6 +254,8 @@ class EditBookPage extends StatelessWidget {
         const SizedBox(height: 13),
         CustomTextForm(
           isRead: check,
+          isMax: isMax ? true : false,
+          isPhone: isPhone ? true : false,
           hintText: hintText,
           icon: icons,
           controller: controller,

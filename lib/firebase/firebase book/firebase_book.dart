@@ -70,7 +70,7 @@ class FirebaseBook {
   Future<List<QueryDocumentSnapshot>> getBooksBestSeller() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('books')
-        .where('price', isLessThanOrEqualTo: '14.99')
+        .where('price', isLessThanOrEqualTo: '14.99', isNotEqualTo: '0')
         .get();
     return querySnapshot.docs;
   }
@@ -95,7 +95,7 @@ class FirebaseBook {
   Future<List<QueryDocumentSnapshot>> getFreeBooks() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('books')
-        .where('price', isEqualTo: 'Free')
+        .where('price', isEqualTo: '0')
         .get();
     return querySnapshot.docs;
   }
@@ -358,7 +358,7 @@ class FirebaseBook {
   Future<int> getFreeBookCount() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('books')
-        .where('price', isEqualTo: 'Free')
+        .where('price', isEqualTo: '0')
         .get();
     int documentCount = querySnapshot.docs.length;
     return documentCount;

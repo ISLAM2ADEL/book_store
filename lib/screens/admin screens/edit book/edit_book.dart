@@ -20,8 +20,8 @@ class EditBook extends StatelessWidget {
     return Scaffold(
       backgroundColor: white,
       bottomNavigationBar: const AdminNavBar(),
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50.0),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(50.0),
         child: AdminAppBar(),
       ),
       body: Center(
@@ -220,7 +220,7 @@ class EditBook extends StatelessWidget {
                       ),
                       const Spacer(),
                       Text(
-                        "\$ $bookPrice",
+                        bookPrice == "0" ? "\$ Free" : "\$ $bookPrice",
                         style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,

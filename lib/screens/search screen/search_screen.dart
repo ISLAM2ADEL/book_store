@@ -193,7 +193,7 @@ class SearchScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(right: 10.0),
                         child: Text(
-                          "\$ $bookPrice",
+                          bookPrice == "0" ? "\$ Free" : "\$ $bookPrice",
                           style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,

@@ -13,6 +13,7 @@ class CustomTextForm extends StatelessWidget {
   final bool isPassword;
   final bool onChangedSearch;
   final bool isRead;
+  final bool isMax;
 
   const CustomTextForm({
     super.key,
@@ -26,6 +27,7 @@ class CustomTextForm extends StatelessWidget {
     this.isEmail = false,
     this.onChangedSearch = false,
     this.isRead = false,
+    this.isMax = false,
   });
 
   @override
@@ -35,6 +37,7 @@ class CustomTextForm extends StatelessWidget {
       builder: (context, state) {
         bool obscureText = cubit.getObscureText();
         return TextFormField(
+          maxLines: isMax ? null : 1,
           readOnly: isRead ? true : false,
           obscureText: isPassword && obscureText ? true : false,
           controller: controller,

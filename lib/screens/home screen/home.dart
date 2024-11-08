@@ -1,6 +1,5 @@
 import 'package:book_store/book%20space%20cubit/admin%20cubit/edit%20book/edit_cubit.dart';
 import 'package:book_store/book%20space%20cubit/authors%20cubit/author_cubit.dart';
-import 'package:book_store/book%20space%20cubit/bottom%20cubit/bottom_cubit.dart';
 import 'package:book_store/book%20space%20cubit/favourite%20cubit/favourite_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/best%20seller%20cubit/best_cubit.dart';
 import 'package:book_store/book%20space%20cubit/home%20cubit/category%20cubit/category_cubit.dart';
@@ -33,7 +32,6 @@ class Home extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final homeCubit = context.read<HomeCubit>();
     final authorCubit = context.read<AuthorCubit>();
-    final bottomCubit = context.read<BottomCubit>();
     final bestCubit = context.read<BestCubit>();
     final categoryCubit = context.read<CategoryCubit>();
     final favouriteCubit = context.read<FavouriteCubit>();
@@ -91,7 +89,6 @@ class Home extends StatelessWidget {
                                 categoryName: categories[index],
                               ),
                               onTap: () {
-                                bottomCubit.category();
                                 Get.Get.off(
                                     () => BookCategory(
                                           category: categories[index],
@@ -507,7 +504,7 @@ class Home extends StatelessWidget {
                   children: [
                     isPrice
                         ? Text(
-                            "\$ $bookRate",
+                            bookRate == "0" ? "\$ Free" : "\$ $bookRate",
                             style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,

@@ -99,6 +99,7 @@ class AddBook extends StatelessWidget {
           hintText: "e.g. The King of Pirates Story",
           icons: Icons.description,
           controller: descriptionController,
+          isMax: true,
           validator: (val) {
             if (val!.isEmpty) {
               return "This field can not be empty";
@@ -362,6 +363,7 @@ class AddBook extends StatelessWidget {
     required TextEditingController controller,
     required String? Function(String?)? validator,
     bool phone = false,
+    bool isMax = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,6 +387,7 @@ class AddBook extends StatelessWidget {
         const SizedBox(height: 13),
         CustomTextForm(
           isPhone: phone ? true : false,
+          isMax: isMax ? true : false,
           hintText: hintText,
           icon: icons,
           controller: controller,

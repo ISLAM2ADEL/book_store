@@ -103,12 +103,6 @@ class LoginScreen extends StatelessWidget {
                         if (val.length < 8) {
                           return 'Password must be at least 8 characters';
                         }
-                        if (!RegExp(r'(?=.*[A-Z])').hasMatch(val)) {
-                          return 'Password must contain at least one uppercase letter';
-                        }
-                        if (!RegExp(r'(?=.*\d)').hasMatch(val)) {
-                          return 'Password must contain at least one digit';
-                        }
                         return null;
                       },
                     ),
