@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart' as Get;
 import 'package:icons_plus/icons_plus.dart';
 
-import '../../../firebase/firebase auth/firebase_form.dart';
 import '../SignUp_Screen/sign_up_screen.dart';
 import '../custom widget/custom_text_form.dart';
 import '../onboarding_screen.dart';
@@ -21,7 +20,6 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    FirebaseForm firebaseAuth = FirebaseForm();
     final cubit = context.read<TextFormCubit>();
 
     return Scaffold(
